@@ -2,7 +2,7 @@
 ```text
 0       1          2       3                               7     8     9   10              12               16
 +-------+----------+-------+-------+-------+-------+-------+-----+-----+----+-------+-------+---+----+---+---+
-| magic | protocol | flag  |      request/response id      | timeout/status | header length | content length |
+| magic | protocol | flag  |      request/response id      | timeout/status | header length | payload length |
 +-------+----------+-------+-------+-------+-------+-------+-----+-----+----+-------+-------+---+----+---+---+
 |                                       header attachment                                                    |
 |                                       payload ...                                                          |
@@ -20,9 +20,9 @@ protocol (bit) :
 flag (bit) :
 
 0                  1         2           3          4          6        7         8
-+------------------+---------+-----------+----------+----+-----+--------+---------+
-| request/response | two way | heartbeat | readonly | compress | metric | reserve |
-+---------------------------------------------------------------------------------+
++------------------+---------+-----------+----------+----+-----+--------+----------+
+| request/response | two way | heartbeat | readonly | compress | metric | reserved |
++----------------------------------------------------------------------------------+
 
 ```
 ```text
@@ -34,5 +34,8 @@ header length: 表示头部长度大小。如果compress标记非0，则代表�
 content length: 表示有效负载长度。
 header attachment：请求或者响应头部键值对。
 payload： 请求或者响应有效负载。
+
+flag (bit)释义：
+compress: 00无压缩、01待分配、11保留.
 
 ```
