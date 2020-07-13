@@ -1,7 +1,3 @@
-/**
- * Alipay.com Inc.
- * Copyright (c) 2004-2020 All Rights Reserved.
- */
 package com.fast.fastrpc.common.logger.slf4j;
 
 import com.fast.fastrpc.common.logger.Logger;

@@ -6,9 +6,13 @@
 
   <groupId>com.alibaba</groupId>
   <artifactId>fastrpc</artifactId>
-  <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>fastrpc-common</module>
+    </modules>
 
-  <name>fastrpc</name>
+    <name>fastrpc</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
@@ -16,6 +20,10 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
+
+    <slf4j.api>1.7.30</slf4j.api>
+    <log4j.core>2.13.3</log4j.core>
+
   </properties>
 
   <dependencies>
@@ -26,6 +34,24 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.api}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
+        <version>${log4j.core}</version>
+        <scope>provided</scope>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
 
   <build>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
