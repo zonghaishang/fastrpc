@@ -42,7 +42,7 @@ public class ConfUtils {
             synchronized (ConfUtils.class) {
                 if (PROPERTIES == null) {
                     // load default property first
-                    Properties properties = loadProperties(Constants.DEFAULT_GLOBAL_PROPERTIES, false, true);
+                    Properties properties = loadProperties(Constants.DEFAULT_GLOBAL_PROPERTIES, true);
                     String path = System.getProperty(Constants.DEFAULT_PROPERTIES_KEY);
                     if (path == null || (path = path.trim()).length() == 0) {
                         path = System.getenv(Constants.DEFAULT_PROPERTIES_KEY);
@@ -51,7 +51,7 @@ public class ConfUtils {
                         }
                     }
                     // maybe override default-fast-rpc.properties
-                    properties.putAll(loadProperties(path, false, true));
+                    properties.putAll(loadProperties(path, true));
                     PROPERTIES = properties;
                 }
             }
@@ -59,7 +59,7 @@ public class ConfUtils {
         return PROPERTIES;
     }
 
-    public static Properties loadProperties(String fileName, boolean allowMultiFile, boolean optional) {
+    public static Properties loadProperties(String fileName, boolean optional) {
         Properties properties = new Properties();
         // find absolute file path.
         if (fileName.startsWith("/")) {
@@ -94,53 +94,28 @@ public class ConfUtils {
             return properties;
         }
 
-        if (!allowMultiFile) {
-            if (list.size() > 1) {
-                String errMsg = String.format("only 1 %s file is expected, but %d %s files found on class path: %s",
-                        fileName, list.size(), fileName, list.toString());
-                logger.warn(errMsg);
-            }
-
-            try {
-                URL url = ConfUtils.class.getClassLoader().getResource(fileName);
-                if (url != null) {
-                    logger.info("load " + fileName + " file from " + url);
-                    InputStream input = url.openStream();
-                    try {
-                        properties.load(input);
-                    } finally {
-                        try {
-                            input.close();
-                        } catch (Throwable t) {
-                        }
-                    }
-                }
-            } catch (Throwable e) {
-                logger.warn("Failed to load " + fileName + " file from " + fileName, e);
-            }
-            return properties;
+        if (list.size() > 1) {
+            String errMsg = String.format("only 1 %s file is expected, but %d %s files found on class path: %s",
+                    fileName, list.size(), fileName, list.toString());
+            logger.warn(errMsg);
         }
 
-        logger.info("load " + fileName + " file from " + list);
-
-        for (java.net.URL url : list) {
-            try {
-                Properties p = new Properties();
+        try {
+            URL url = ConfUtils.class.getClassLoader().getResource(fileName);
+            if (url != null) {
+                logger.info("load " + fileName + " file from " + url);
                 InputStream input = url.openStream();
-                if (input != null) {
+                try {
+                    properties.load(input);
+                } finally {
                     try {
-                        p.load(input);
-                        properties.putAll(p);
-                    } finally {
-                        try {
-                            input.close();
-                        } catch (Throwable t) {
-                        }
+                        input.close();
+                    } catch (Throwable t) {
                     }
                 }
-            } catch (Throwable e) {
-                logger.warn("Fail to load " + fileName + " file from " + url, e);
             }
+        } catch (Throwable e) {
+            logger.warn("Failed to load " + fileName + " file from " + fileName, e);
         }
 
         return properties;
