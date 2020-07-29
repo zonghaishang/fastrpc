@@ -10,6 +10,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>fastrpc-common</module>
+        <module>fastrpc-protocol</module>
     </modules>
 
     <name>fastrpc</name>
