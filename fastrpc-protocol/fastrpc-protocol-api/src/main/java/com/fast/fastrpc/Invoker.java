@@ -12,4 +12,11 @@ public interface Invoker<T> extends Host {
 
     Class<T> getInterface();
 
+    /**
+     * Gets the object held by invoker,
+     * On the server side, for example, return the interface implementation.
+     *
+     * @return the real proxy object
+     */
+    T getProxy();
 }
