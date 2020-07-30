@@ -19,16 +19,16 @@ protocol (bit) :
 
 flag (bit) :
 
-0                  1         2           3          4        5              8
+0                  1         2           3          4                       8
 +------------------+---------+-----------+----------+--------+----+----+----+
-|  response/request/one way  | heartbeat | readonly | metric |   compress   |
+|  response/request/one way  | heartbeat | readonly |       compress        |
 +---------------------------------------------------------------------------+
 
 ```
 ```text
 magic: 协议魔法数，固定0xAF(fast取反有效字符)。
 protocol: 协议码，包含协议序号、序列化序号。目前固定protocol code占用3bit，固定值1(fast协议)，剩余位未来扩展; 剩余5bit留给序列化反序列化序号。
-flag：rpc协议标记，0~7分别表示请求/响应、one way、心跳、readonly、metric服务性能(目前固定0)和压缩算法。
+flag：rpc协议标记，0~7分别表示请求/响应、one way、心跳、readonly和压缩算法。
 timeout/status: 请求超时/响应状态码。
 header length: 表示头部长度大小。如果compress标记非0，则代表压缩后大小。
 content length: 表示有效负载长度。
@@ -36,6 +36,6 @@ header attachment：请求或者响应头部键值对。
 payload： 请求或者响应有效负载。
 
 flag (bit)释义：
-compress: 000无压缩、1xy启用压缩, x等于0压缩header、1压缩body. y代表压缩算法id，0或者1.
+compress: 0000无压缩、1xyz启用压缩, x等于0压缩header、x等于1压缩body. yz代表压缩算法id.
 
 ```
