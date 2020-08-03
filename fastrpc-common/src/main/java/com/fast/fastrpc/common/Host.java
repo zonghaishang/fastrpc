@@ -8,6 +8,6 @@ public interface Host extends Destroyable {
 
     URL getUrl();
 
-    boolean isAvailable();
+    boolean isActive();
 
 }
