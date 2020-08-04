@@ -1,5 +1,6 @@
 package com.fast.fastrpc.exchange;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -8,9 +9,9 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class Request {
 
-    private static final AtomicLong INVOKE_ID = new AtomicLong(1);
+    private static final AtomicInteger INVOKE_ID = new AtomicInteger(1);
 
-    private final long id;
+    private final int id;
 
     private String version;
 
@@ -22,21 +23,23 @@ public class Request {
 
     private boolean readOnly = false;
 
+    private int timeout;
+
     private Object payload;
 
     public Request() {
         id = newId();
     }
 
-    public Request(long id) {
+    public Request(int id) {
         this.id = id;
     }
 
-    private static long newId() {
+    private static int newId() {
         return INVOKE_ID.getAndIncrement();
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
@@ -64,14 +67,6 @@ public class Request {
         this.broken = mBroken;
     }
 
-    public Object getData() {
-        return payload;
-    }
-
-    public void setData(Object msg) {
-        payload = msg;
-    }
-
     public boolean isHeartbeat() {
         return heartbeat;
     }
@@ -94,5 +89,13 @@ public class Request {
 
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
+    }
+
+    public int getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
     }
 }

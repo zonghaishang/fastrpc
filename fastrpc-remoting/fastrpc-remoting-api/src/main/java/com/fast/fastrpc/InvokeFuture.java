@@ -21,6 +21,10 @@ public interface InvokeFuture {
      */
     Object get(int timeout) throws RemotingException;
 
+    int invokeId();
+
+    void receive(Object value);
+
     /**
      * set callback.
      *
