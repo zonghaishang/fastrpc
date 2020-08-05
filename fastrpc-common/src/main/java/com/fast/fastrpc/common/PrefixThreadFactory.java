@@ -9,19 +9,13 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class PrefixThreadFactory implements ThreadFactory {
 
-    protected static final AtomicInteger POOL_SEQ = new AtomicInteger(1);
-
     protected final AtomicInteger order = new AtomicInteger(1);
 
     protected final String prefix;
 
     protected final boolean daemon;
 
-    protected final ThreadGroup mGroup;
-
-    public PrefixThreadFactory() {
-        this("pool-" + POOL_SEQ.getAndIncrement(), true);
-    }
+    protected final ThreadGroup group;
 
     public PrefixThreadFactory(String prefix) {
         this(prefix, true);
@@ -31,13 +25,13 @@ public class PrefixThreadFactory implements ThreadFactory {
         this.prefix = prefix + "-thread-";
         this.daemon = daemon;
         SecurityManager s = System.getSecurityManager();
-        mGroup = (s == null) ? Thread.currentThread().getThreadGroup() : s.getThreadGroup();
+        group = (s == null) ? Thread.currentThread().getThreadGroup() : s.getThreadGroup();
     }
 
     @Override
     public Thread newThread(Runnable runnable) {
         String name = prefix + order.getAndIncrement();
-        Thread ret = new Thread(mGroup, runnable, name, 0);
+        Thread ret = new Thread(group, runnable, name, 0);
         ret.setDaemon(daemon);
         return ret;
     }
