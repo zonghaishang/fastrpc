@@ -33,6 +33,9 @@ public class DefaultFuture implements InvokeFuture {
 
     private int defaultTimeout = 3000;
 
+    public DefaultFuture() {
+    }
+
     public DefaultFuture(Channel channel, int invokeId) {
         this(channel, invokeId, null);
     }

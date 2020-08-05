@@ -20,7 +20,11 @@ public class Constants {
 
     public static final String TIMEOUT_KEY = "timeout";
 
+    public static final String SHUTDOWN_KEY = "shutdown";
+
     public static final String APPLICATION_KEY = "app";
+
+    public static final String RECONNECT_KEY = "reconnect";
 
     public static final Pattern COMMA_SPLIT_PATTERN = Pattern.compile("\\s*[,]+\\s*");
 

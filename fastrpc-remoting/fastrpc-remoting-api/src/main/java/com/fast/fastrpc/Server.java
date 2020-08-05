@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface Server extends Peer {
 
-    void start();
+    void start() throws RemotingException;
 
     List<Channel> getChannels();
 

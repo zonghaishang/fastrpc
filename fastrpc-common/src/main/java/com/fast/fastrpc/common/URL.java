@@ -147,6 +147,14 @@ public final class URL {
         return value;
     }
 
+    public int getParameter(String key, int defaultValue) {
+        String value = getParameter(key);
+        if (value == null || (value = value.trim()).length() == 0) {
+            return defaultValue;
+        }
+        return Integer.parseInt(value);
+    }
+
     public String[] getParameter(String key, String[] defaultValue) {
         String value = getParameter(key);
         if (value == null || value.length() == 0) {
