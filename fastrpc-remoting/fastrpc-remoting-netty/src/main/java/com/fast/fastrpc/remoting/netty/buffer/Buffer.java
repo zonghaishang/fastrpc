@@ -1,4 +1,4 @@
-package com.fast.fastrpc.buffer;
+package com.fast.fastrpc.remoting.netty.buffer;
 
 import io.netty.buffer.ByteBuf;
 

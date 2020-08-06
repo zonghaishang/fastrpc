@@ -37,6 +37,10 @@ public interface InvokeFuture {
      */
     InvokeCallback getCallback();
 
+    void setTimeout(Timeout timeout);
+
+    void cancelTimeout();
+
     /**
      * check is done.
      *

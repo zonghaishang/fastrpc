@@ -10,6 +10,7 @@ import com.fast.fastrpc.common.PrefixThreadFactory;
 import com.fast.fastrpc.common.URL;
 
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -114,6 +115,25 @@ public abstract class AbstractClient extends AbstractPeer implements Client {
         }
 
         shutdown();
+    }
+
+    @Override
+    public SocketAddress localAddress() {
+        Channel channel = this.channel;
+        if (channel != null) return channel.localAddress();
+        return null;
+    }
+
+    @Override
+    public SocketAddress remoteAddress() {
+        return this.remoteAddress;
+    }
+
+    @Override
+    public boolean isActive() {
+        Channel channel = this.channel;
+        if (channel == null) return false;
+        return channel.isActive();
     }
 
     public abstract void doOpen() throws Throwable;

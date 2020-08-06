@@ -1,12 +1,14 @@
 package com.fast.fastrpc.transporter;
 
 import com.fast.fastrpc.ChannelHandler;
+import com.fast.fastrpc.InvokeFuture;
 import com.fast.fastrpc.RemotingException;
 import com.fast.fastrpc.Server;
 import com.fast.fastrpc.channel.Channel;
 import com.fast.fastrpc.common.URL;
 
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 
 /**
  * @author yiji
@@ -37,5 +39,44 @@ public abstract class AbstractServer extends AbstractPeer implements Server {
         }
     }
 
+    @Override
+    public InvokeFuture shutdown() {
+        return shutdown(this.shutdownTimeout);
+    }
+
+    @Override
+    public InvokeFuture shutdown(int timeout) {
+        InvokeFuture future = doShutdown(timeout);
+        Channel channel = this.channel;
+        if (channel != null) channel.shutdown();
+        return future;
+    }
+
+    @Override
+    public void destroy() {
+        shutdown();
+    }
+
+    @Override
+    public SocketAddress localAddress() {
+        return this.address;
+    }
+
+    @Override
+    public SocketAddress remoteAddress() {
+        Channel channel = this.channel;
+        if (channel != null) return channel.remoteAddress();
+        return null;
+    }
+
+    @Override
+    public boolean isActive() {
+        Channel channel = this.channel;
+        if (channel == null) return false;
+        return channel.isActive();
+    }
+
     public abstract Channel doBind() throws Throwable;
+
+    public abstract InvokeFuture doShutdown(int timeout);
 }

@@ -1,6 +1,6 @@
 package com.fast.fastrpc;
 
-import com.fast.fastrpc.buffer.IoBuffer;
+import com.fast.fastrpc.remoting.netty.buffer.IoBuffer;
 import com.fast.fastrpc.channel.Channel;
 import com.fast.fastrpc.common.spi.SPI;
 

@@ -15,6 +15,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class DefaultFuture implements InvokeFuture {
 
+    public static final Object SUCCESS = new Object();
+    public static final Object TIMEOUT = new Object();
+
     private static final Logger logger = LoggerFactory.getLogger(DefaultFuture.class);
 
     private final CountDownLatch takeLock = new CountDownLatch(1);
@@ -33,7 +36,13 @@ public class DefaultFuture implements InvokeFuture {
 
     private int defaultTimeout = 3000;
 
+    private Timeout timeout;
+
     public DefaultFuture() {
+    }
+
+    public DefaultFuture(Channel channel) {
+        this.channel = channel;
     }
 
     public DefaultFuture(Channel channel, int invokeId) {
@@ -79,7 +88,11 @@ public class DefaultFuture implements InvokeFuture {
 
     @Override
     public void receive(Object value) {
-        this.value = value;
+        if (value instanceof Response) {
+            this.response = (Response) value;
+        } else {
+            this.value = value;
+        }
         this.takeLock.countDown();
         executeCallback();
     }
@@ -98,8 +111,20 @@ public class DefaultFuture implements InvokeFuture {
     }
 
     @Override
+    public void setTimeout(Timeout timeout) {
+        this.timeout = timeout;
+    }
+
+    @Override
+    public void cancelTimeout() {
+        if (this.timeout != null && !this.timeout.isCancelled()) {
+            this.timeout.cancel();
+        }
+    }
+
+    @Override
     public boolean isDone() {
-        return this.takeLock.getCount() <= 0;
+        return this.takeLock.getCount() <= 0 || this.value != null;
     }
 
     public Channel getChannel() {
@@ -107,7 +132,8 @@ public class DefaultFuture implements InvokeFuture {
     }
 
     public Object parseValue() throws RemotingException {
-        if (value != null) return value;
+        Object parsed = value;
+        if (parsed != null) return parsed;
 
         Response response = this.response;
         if (response == null) {

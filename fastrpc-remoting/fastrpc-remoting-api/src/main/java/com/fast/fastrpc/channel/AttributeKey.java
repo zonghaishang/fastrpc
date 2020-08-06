@@ -12,11 +12,29 @@ public final class AttributeKey<T> {
     private int id;
     private String name;
 
+    private volatile Attribute<T> attribute;
+
     private final static ConstantPool<AttributeKey<Object>> pool = new ConstantPool();
 
     private AttributeKey(int id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Attribute<T> getAttribute() {
+        return attribute;
+    }
+
+    public void setAttribute(Attribute<T> attribute) {
+        this.attribute = attribute;
+    }
+
+    public void clear() {
+        this.setAttribute(null);
     }
 
     public static <T> AttributeKey<T> valueOf(String name) {

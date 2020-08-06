@@ -45,4 +45,9 @@ public abstract class AbstractPeer implements Peer, ChannelHandler {
         String codec = url.getParameter(CODEC_KEY, url.getProtocol());
         return ExtensionLoader.getExtensionLoader(Codec.class).getExtension(url.getParameter(CODEC_KEY, codec));
     }
+
+    @Override
+    public URL getUrl() {
+        return this.url;
+    }
 }
