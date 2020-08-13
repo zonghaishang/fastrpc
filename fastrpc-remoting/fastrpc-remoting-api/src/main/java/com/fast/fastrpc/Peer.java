@@ -1,6 +1,7 @@
 package com.fast.fastrpc;
 
 import com.fast.fastrpc.channel.Channel;
+import com.fast.fastrpc.channel.InvokeFuture;
 import com.fast.fastrpc.common.Host;
 
 /**

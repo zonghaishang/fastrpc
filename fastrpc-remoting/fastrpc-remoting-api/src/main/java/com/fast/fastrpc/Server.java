@@ -2,6 +2,7 @@ package com.fast.fastrpc;
 
 import com.fast.fastrpc.channel.Channel;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -12,6 +13,6 @@ public interface Server extends Peer {
 
     void start() throws RemotingException;
 
-    List<Channel> getChannels();
+    Collection<Channel> getChannels();
 
 }

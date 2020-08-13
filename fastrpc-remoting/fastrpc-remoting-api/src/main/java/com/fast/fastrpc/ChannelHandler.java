@@ -1,6 +1,7 @@
 package com.fast.fastrpc;
 
 import com.fast.fastrpc.channel.Channel;
+import com.fast.fastrpc.channel.InvokeFuture;
 
 /**
  * @author yiji
@@ -28,7 +29,7 @@ public interface ChannelHandler {
      * @param channel channel.
      * @param message message.
      */
-    void write(Channel channel, Object message) throws RemotingException;
+    InvokeFuture write(Channel channel, Object message) throws RemotingException;
 
     /**
      * on message received.

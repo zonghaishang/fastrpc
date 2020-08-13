@@ -2,7 +2,7 @@ package com.fast.fastrpc.transporter;
 
 import com.fast.fastrpc.ChannelHandler;
 import com.fast.fastrpc.Client;
-import com.fast.fastrpc.InvokeFuture;
+import com.fast.fastrpc.channel.InvokeFuture;
 import com.fast.fastrpc.RemotingException;
 import com.fast.fastrpc.channel.Channel;
 import com.fast.fastrpc.common.Constants;
@@ -97,10 +97,10 @@ public abstract class AbstractClient extends AbstractPeer implements Client {
 
     @Override
     public InvokeFuture shutdown(int timeout) {
-        InvokeFuture future = doShutdown(timeout);
+        doShutdown(timeout);
         Channel channel = this.channel;
-        if (channel != null) channel.shutdown();
-        return future;
+        if (channel != null) return channel.shutdown();
+        return null;
     }
 
     @Override
@@ -140,5 +140,5 @@ public abstract class AbstractClient extends AbstractPeer implements Client {
 
     public abstract Channel doConnect() throws RemotingException;
 
-    public abstract InvokeFuture doShutdown(int timeout);
+    public abstract void doShutdown(int timeout);
 }

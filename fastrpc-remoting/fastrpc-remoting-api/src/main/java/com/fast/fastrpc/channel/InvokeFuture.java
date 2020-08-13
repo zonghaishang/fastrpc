@@ -1,4 +1,6 @@
-package com.fast.fastrpc;
+package com.fast.fastrpc.channel;
+
+import com.fast.fastrpc.RemotingException;
 
 /**
  * @author yiji
@@ -23,23 +25,12 @@ public interface InvokeFuture {
 
     int invokeId();
 
-    void receive(Object value);
-
     /**
      * set callback.
      *
      * @param callback
      */
-    void setCallback(InvokeCallback callback);
-
-    /**
-     * get callback.
-     */
-    InvokeCallback getCallback();
-
-    void setTimeout(Timeout timeout);
-
-    void cancelTimeout();
+    void addListener(InvokeListener callback);
 
     /**
      * check is done.
@@ -47,5 +38,14 @@ public interface InvokeFuture {
      * @return done or not.
      */
     boolean isDone();
+
+    /**
+     * check is success.
+     *
+     * @return true success or failed.
+     */
+    boolean isSuccess();
+
+    Throwable cause();
 
 }

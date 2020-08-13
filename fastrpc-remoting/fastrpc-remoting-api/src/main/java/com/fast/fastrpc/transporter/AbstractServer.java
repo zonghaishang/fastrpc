@@ -1,7 +1,8 @@
 package com.fast.fastrpc.transporter;
 
 import com.fast.fastrpc.ChannelHandler;
-import com.fast.fastrpc.InvokeFuture;
+import com.fast.fastrpc.channel.ChannelPromise;
+import com.fast.fastrpc.channel.InvokeFuture;
 import com.fast.fastrpc.RemotingException;
 import com.fast.fastrpc.Server;
 import com.fast.fastrpc.channel.Channel;
@@ -40,15 +41,21 @@ public abstract class AbstractServer extends AbstractPeer implements Server {
     }
 
     @Override
+    public InvokeFuture write(Object msg, ChannelPromise promise) throws RemotingException {
+        return this.handler.write(this.channel, msg);
+    }
+
+    @Override
     public InvokeFuture shutdown() {
         return shutdown(this.shutdownTimeout);
     }
 
     @Override
     public InvokeFuture shutdown(int timeout) {
-        InvokeFuture future = doShutdown(timeout);
         Channel channel = this.channel;
-        if (channel != null) channel.shutdown();
+        InvokeFuture future = null;
+        if (channel != null) future = channel.shutdown();
+        doShutdown(timeout);
         return future;
     }
 
@@ -78,5 +85,5 @@ public abstract class AbstractServer extends AbstractPeer implements Server {
 
     public abstract Channel doBind() throws Throwable;
 
-    public abstract InvokeFuture doShutdown(int timeout);
+    public abstract void doShutdown(int timeout);
 }

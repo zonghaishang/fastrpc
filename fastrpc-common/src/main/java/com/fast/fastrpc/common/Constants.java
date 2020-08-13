@@ -26,6 +26,10 @@ public class Constants {
 
     public static final String RECONNECT_KEY = "reconnect";
 
+    public static final String WORKER_THREADS_KEY = "workers";
+
+    public static final int DEFAULT_WORKER_THREADS = Math.min(Runtime.getRuntime().availableProcessors() + 1, 32);
+
     public static final Pattern COMMA_SPLIT_PATTERN = Pattern.compile("\\s*[,]+\\s*");
 
     public static final String DEFAULT_PROPERTIES_KEY = "default.properties.file";

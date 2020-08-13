@@ -2,7 +2,10 @@ package com.fast.fastrpc.transporter;
 
 import com.fast.fastrpc.ChannelHandler;
 import com.fast.fastrpc.Codec;
+import com.fast.fastrpc.channel.InvokeFuture;
 import com.fast.fastrpc.Peer;
+import com.fast.fastrpc.RemotingException;
+import com.fast.fastrpc.channel.Channel;
 import com.fast.fastrpc.common.Constants;
 import com.fast.fastrpc.common.URL;
 import com.fast.fastrpc.common.logger.Logger;
@@ -27,8 +30,8 @@ public abstract class AbstractPeer implements Peer, ChannelHandler {
 
     protected int shutdownTimeout;
 
-    private URL url;
-    private ChannelHandler handler;
+    protected URL url;
+    protected ChannelHandler handler;
 
     public AbstractPeer(URL url, ChannelHandler handler) {
         this.url = url;
@@ -49,5 +52,30 @@ public abstract class AbstractPeer implements Peer, ChannelHandler {
     @Override
     public URL getUrl() {
         return this.url;
+    }
+
+    @Override
+    public void connected(Channel channel) throws RemotingException {
+        this.handler.connected(channel);
+    }
+
+    @Override
+    public void disconnected(Channel channel) throws RemotingException {
+        this.handler.disconnected(channel);
+    }
+
+    @Override
+    public InvokeFuture write(Channel channel, Object message) throws RemotingException {
+        return this.handler.write(channel, message);
+    }
+
+    @Override
+    public void received(Channel channel, Object message) throws RemotingException {
+        this.handler.received(channel, message);
+    }
+
+    @Override
+    public void caught(Channel channel, Throwable exception) throws RemotingException {
+        this.handler.caught(channel, exception);
     }
 }

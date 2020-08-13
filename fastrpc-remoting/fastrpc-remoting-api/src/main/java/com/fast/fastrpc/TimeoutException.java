@@ -8,6 +8,10 @@ import com.fast.fastrpc.channel.Channel;
  */
 public class TimeoutException extends RemotingException {
 
+    public TimeoutException(String msg) {
+        super(null, msg);
+    }
+
     public TimeoutException(Channel channel, String msg) {
         super(channel, msg);
     }

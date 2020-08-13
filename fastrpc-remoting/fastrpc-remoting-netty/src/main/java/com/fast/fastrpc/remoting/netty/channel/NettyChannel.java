@@ -1,11 +1,14 @@
 package com.fast.fastrpc.remoting.netty.channel;
 
-import com.fast.fastrpc.DefaultFuture;
-import com.fast.fastrpc.InvokeFuture;
 import com.fast.fastrpc.Timeout;
+import com.fast.fastrpc.TimeoutException;
 import com.fast.fastrpc.channel.Attribute;
 import com.fast.fastrpc.channel.AttributeKey;
 import com.fast.fastrpc.channel.Channel;
+import com.fast.fastrpc.channel.ChannelPromise;
+import com.fast.fastrpc.channel.DefaultChannelFuture;
+import com.fast.fastrpc.channel.DefaultFuture;
+import com.fast.fastrpc.channel.InvokeFuture;
 import com.fast.fastrpc.remoting.netty.TimeoutTask;
 import com.fast.fastrpc.remoting.netty.Timer;
 import io.netty.channel.ChannelFuture;
@@ -21,6 +24,8 @@ public class NettyChannel implements Channel {
 
     private io.netty.channel.Channel channel;
 
+    private static io.netty.util.AttributeKey<NettyChannel> channelKey = io.netty.util.AttributeKey.valueOf("channelKey");
+
     public NettyChannel(io.netty.channel.Channel channel) {
         if (this.channel == null) throw new IllegalArgumentException("channel is required.");
         this.channel = channel;
@@ -32,8 +37,17 @@ public class NettyChannel implements Channel {
     }
 
     @Override
-    public InvokeFuture write(Object msg, int timeout) {
-        return null;
+    public InvokeFuture write(Object message, final ChannelPromise promise) {
+        final DefaultFuture invokeFuture = new DefaultFuture(this);
+        channel.writeAndFlush(message).addListener(new ChannelFutureListener() {
+            @Override
+            public void operationComplete(final ChannelFuture future) {
+                if (promise != null) {
+                    promise.complete(new DefaultChannelFuture(future.isSuccess(), future.cause()));
+                }
+            }
+        });
+        return invokeFuture;
     }
 
     @Override
@@ -50,7 +64,7 @@ public class NettyChannel implements Channel {
                 @Override
                 public void execute(Timeout timeout) {
                     if (invokeFuture.isDone()) return;
-                    invokeFuture.receive(DefaultFuture.TIMEOUT);
+                    invokeFuture.receive(new TimeoutException(NettyChannel.this, "write timeout."));
                 }
             }, timeout);
             invokeFuture.setTimeout(task);
@@ -87,6 +101,19 @@ public class NettyChannel implements Channel {
         return this.channel.hasAttr(internalKey);
     }
 
+    public static NettyChannel getOrAddChannel(io.netty.channel.Channel channel) {
+        NettyChannel nettyChannel = channel.attr(channelKey).get();
+        if (nettyChannel == null) {
+            nettyChannel = new NettyChannel(channel);
+            channel.attr(channelKey).setIfAbsent(nettyChannel);
+        }
+        return nettyChannel;
+    }
+
+    public static NettyChannel removeChannel(io.netty.channel.Channel channel) {
+        return channel.attr(channelKey).getAndSet(null);
+    }
+
     @Override
     public SocketAddress localAddress() {
         return this.channel.localAddress();
@@ -95,5 +122,10 @@ public class NettyChannel implements Channel {
     @Override
     public SocketAddress remoteAddress() {
         return this.channel.remoteAddress();
+    }
+
+    @Override
+    public String toString() {
+        return localAddress() + " -> " + remoteAddress();
     }
 }

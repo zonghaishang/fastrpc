@@ -1,9 +1,10 @@
 package com.fast.fastrpc.handler;
 
-import com.fast.fastrpc.DefaultFuture;
+import com.fast.fastrpc.channel.DefaultFuture;
 import com.fast.fastrpc.ExchangeHandler;
 import com.fast.fastrpc.ExchangeProxyHandler;
 import com.fast.fastrpc.ExecutionException;
+import com.fast.fastrpc.channel.InvokeFuture;
 import com.fast.fastrpc.RemotingException;
 import com.fast.fastrpc.channel.AttributeKey;
 import com.fast.fastrpc.channel.Channel;
@@ -43,9 +44,9 @@ public class HeaderExchangeHandler implements ExchangeProxyHandler {
     }
 
     @Override
-    public void write(Channel channel, Object message) throws RemotingException {
+    public InvokeFuture write(Channel channel, Object message) throws RemotingException {
         updateWriteTimestamp(channel);
-        handler.write(channel, message);
+        return handler.write(channel, message);
     }
 
     @Override
@@ -71,7 +72,7 @@ public class HeaderExchangeHandler implements ExchangeProxyHandler {
                     response.setStatus(Response.SERVER_ERROR);
                     // todo 响应错误堆栈
                     response.setError(e.getMessage());
-                    channel.write(response, request.getTimeout());
+                    channel.write(response, null);
                     return;
                 }
             }
@@ -109,7 +110,7 @@ public class HeaderExchangeHandler implements ExchangeProxyHandler {
         }
 
         if (!request.isOneWay()) {
-            channel.write(response, request.getTimeout());
+            channel.write(response, null);
         }
 
         return response;

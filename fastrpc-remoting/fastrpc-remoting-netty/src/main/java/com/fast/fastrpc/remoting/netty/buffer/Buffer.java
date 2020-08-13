@@ -14,6 +14,10 @@ public class Buffer implements IoBuffer {
         this.buffer = buffer;
     }
 
+    public static IoBuffer wrap(ByteBuf buffer) {
+        return new Buffer(buffer);
+    }
+
     @Override
     public int capacity() {
         return this.buffer.capacity();

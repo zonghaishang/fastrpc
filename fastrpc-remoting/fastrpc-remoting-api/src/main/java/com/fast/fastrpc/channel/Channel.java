@@ -1,6 +1,6 @@
 package com.fast.fastrpc.channel;
 
-import com.fast.fastrpc.InvokeFuture;
+import com.fast.fastrpc.RemotingException;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -38,7 +38,7 @@ public interface Channel extends AttributeMap {
      */
     SocketAddress remoteAddress();
 
-    InvokeFuture write(Object msg, int timeout);
+    InvokeFuture write(Object msg, ChannelPromise promise) throws RemotingException;
 
     InvokeFuture shutdown();
 
