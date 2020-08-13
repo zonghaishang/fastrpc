@@ -41,8 +41,8 @@ public abstract class AbstractServer extends AbstractPeer implements Server {
     }
 
     @Override
-    public InvokeFuture write(Object msg, ChannelPromise promise) throws RemotingException {
-        return this.handler.write(this.channel, msg);
+    public void write(Object msg, ChannelPromise promise) throws RemotingException {
+        this.handler.write(this.channel, msg);
     }
 
     @Override

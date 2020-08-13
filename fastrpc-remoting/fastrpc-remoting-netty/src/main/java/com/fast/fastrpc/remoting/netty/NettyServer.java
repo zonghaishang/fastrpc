@@ -89,9 +89,8 @@ public class NettyServer extends AbstractServer implements Server {
     }
 
     @Override
-    public InvokeFuture write(Object msg, ChannelPromise promise) throws RemotingException {
-        final InvokeFuture future = super.write(msg, promise);
-
+    public void write(Object msg, ChannelPromise promise) throws RemotingException {
+        super.write(msg, promise);
         for (Channel channel : getChannels()) {
             if (channel.isActive()) {
                 try {
@@ -101,8 +100,6 @@ public class NettyServer extends AbstractServer implements Server {
                 }
             }
         }
-
-        return future;
     }
 
     @Override

@@ -37,8 +37,7 @@ public class NettyChannel implements Channel {
     }
 
     @Override
-    public InvokeFuture write(Object message, final ChannelPromise promise) {
-        final DefaultFuture invokeFuture = new DefaultFuture(this);
+    public void write(Object message, final ChannelPromise promise) {
         channel.writeAndFlush(message).addListener(new ChannelFutureListener() {
             @Override
             public void operationComplete(final ChannelFuture future) {
@@ -47,7 +46,6 @@ public class NettyChannel implements Channel {
                 }
             }
         });
-        return invokeFuture;
     }
 
     @Override

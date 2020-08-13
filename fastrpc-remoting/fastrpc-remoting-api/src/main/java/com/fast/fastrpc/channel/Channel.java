@@ -38,7 +38,7 @@ public interface Channel extends AttributeMap {
      */
     SocketAddress remoteAddress();
 
-    InvokeFuture write(Object msg, ChannelPromise promise) throws RemotingException;
+    void write(Object msg, ChannelPromise promise) throws RemotingException;
 
     InvokeFuture shutdown();
 
