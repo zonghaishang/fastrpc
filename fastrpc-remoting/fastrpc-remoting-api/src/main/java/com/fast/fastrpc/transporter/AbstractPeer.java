@@ -2,10 +2,10 @@ package com.fast.fastrpc.transporter;
 
 import com.fast.fastrpc.ChannelHandler;
 import com.fast.fastrpc.Codec;
-import com.fast.fastrpc.channel.InvokeFuture;
 import com.fast.fastrpc.Peer;
 import com.fast.fastrpc.RemotingException;
 import com.fast.fastrpc.channel.Channel;
+import com.fast.fastrpc.channel.InvokeFuture;
 import com.fast.fastrpc.common.Constants;
 import com.fast.fastrpc.common.URL;
 import com.fast.fastrpc.common.logger.Logger;
@@ -24,7 +24,7 @@ public abstract class AbstractPeer implements Peer, ChannelHandler {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected AtomicBoolean closed = new AtomicBoolean();
+    protected AtomicBoolean destroyed = new AtomicBoolean();
 
     protected Codec codec;
 
@@ -77,5 +77,9 @@ public abstract class AbstractPeer implements Peer, ChannelHandler {
     @Override
     public void caught(Channel channel, Throwable exception) throws RemotingException {
         this.handler.caught(channel, exception);
+    }
+
+    protected boolean isDestroyed() {
+        return destroyed.get();
     }
 }

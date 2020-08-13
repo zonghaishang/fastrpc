@@ -62,7 +62,7 @@ public class NettyChannel implements Channel {
                 @Override
                 public void execute(Timeout timeout) {
                     if (invokeFuture.isDone()) return;
-                    invokeFuture.receive(new TimeoutException(NettyChannel.this, "write timeout."));
+                    invokeFuture.receive(new TimeoutException(NettyChannel.this, "shutdown channel timeout."));
                 }
             }, timeout);
             invokeFuture.setTimeout(task);
@@ -125,5 +125,9 @@ public class NettyChannel implements Channel {
     @Override
     public String toString() {
         return localAddress() + " -> " + remoteAddress();
+    }
+
+    public io.netty.channel.Channel getChannel() {
+        return channel;
     }
 }

@@ -1,11 +1,11 @@
 package com.fast.fastrpc.transporter;
 
 import com.fast.fastrpc.ChannelHandler;
-import com.fast.fastrpc.channel.ChannelPromise;
-import com.fast.fastrpc.channel.InvokeFuture;
 import com.fast.fastrpc.RemotingException;
 import com.fast.fastrpc.Server;
 import com.fast.fastrpc.channel.Channel;
+import com.fast.fastrpc.channel.ChannelPromise;
+import com.fast.fastrpc.channel.InvokeFuture;
 import com.fast.fastrpc.common.URL;
 
 import java.net.InetSocketAddress;
@@ -43,6 +43,15 @@ public abstract class AbstractServer extends AbstractPeer implements Server {
     @Override
     public void write(Object msg, ChannelPromise promise) throws RemotingException {
         this.handler.write(this.channel, msg);
+        for (Channel channel : getChannels()) {
+            if (channel.isActive()) {
+                try {
+                    channel.write(msg, null);
+                } catch (Exception e) {
+                    logger.warn("Failed to write message by channel: " + channel, e);
+                }
+            }
+        }
     }
 
     @Override
@@ -61,7 +70,9 @@ public abstract class AbstractServer extends AbstractPeer implements Server {
 
     @Override
     public void destroy() {
-        shutdown();
+        if (destroyed.compareAndSet(false, true)) {
+            shutdown();
+        }
     }
 
     @Override

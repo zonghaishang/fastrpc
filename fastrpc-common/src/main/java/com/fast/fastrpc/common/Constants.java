@@ -14,7 +14,7 @@ public class Constants {
 
     public static final String DEFAULT_KEY = "default";
 
-    public static final String UNIQUE_ID = "unique-id";
+    public static final String UNIQUE_ID = "uniqueId";
 
     public static final String SERVICE_KEY = "service";
 
@@ -25,6 +25,8 @@ public class Constants {
     public static final String APPLICATION_KEY = "app";
 
     public static final String RECONNECT_KEY = "reconnect";
+
+    public static final String CONNECT_TIMEOUT_KEY = "connect";
 
     public static final String WORKER_THREADS_KEY = "workers";
 

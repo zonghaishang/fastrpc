@@ -6,8 +6,6 @@ import com.fast.fastrpc.Server;
 import com.fast.fastrpc.channel.Attribute;
 import com.fast.fastrpc.channel.AttributeKey;
 import com.fast.fastrpc.channel.Channel;
-import com.fast.fastrpc.channel.ChannelPromise;
-import com.fast.fastrpc.channel.InvokeFuture;
 import com.fast.fastrpc.common.Constants;
 import com.fast.fastrpc.common.PrefixThreadFactory;
 import com.fast.fastrpc.common.URL;
@@ -86,20 +84,6 @@ public class NettyServer extends AbstractServer implements Server {
     public void disconnected(Channel channel) throws RemotingException {
         super.disconnected(channel);
         channels.remove(channel);
-    }
-
-    @Override
-    public void write(Object msg, ChannelPromise promise) throws RemotingException {
-        super.write(msg, promise);
-        for (Channel channel : getChannels()) {
-            if (channel.isActive()) {
-                try {
-                    channel.write(msg, null);
-                } catch (Exception e) {
-                    logger.warn("Failed to write message by channel: " + channel, e);
-                }
-            }
-        }
     }
 
     @Override

@@ -2,9 +2,10 @@ package com.fast.fastrpc.transporter;
 
 import com.fast.fastrpc.ChannelHandler;
 import com.fast.fastrpc.Client;
-import com.fast.fastrpc.channel.InvokeFuture;
 import com.fast.fastrpc.RemotingException;
 import com.fast.fastrpc.channel.Channel;
+import com.fast.fastrpc.channel.ChannelPromise;
+import com.fast.fastrpc.channel.InvokeFuture;
 import com.fast.fastrpc.common.Constants;
 import com.fast.fastrpc.common.PrefixThreadFactory;
 import com.fast.fastrpc.common.URL;
@@ -27,6 +28,8 @@ public abstract class AbstractClient extends AbstractPeer implements Client {
 
     protected int interval;
 
+    protected int connectTimeout;
+
     protected volatile ScheduledFuture<?> future;
 
     protected static final ScheduledThreadPoolExecutor scheduledPool
@@ -35,6 +38,7 @@ public abstract class AbstractClient extends AbstractPeer implements Client {
     public AbstractClient(URL url, ChannelHandler handler) throws RemotingException {
         super(url, handler);
         this.interval = url.getParameter(Constants.RECONNECT_KEY, 3000);
+        this.connectTimeout = url.getParameter(Constants.CONNECT_TIMEOUT_KEY, 3000);
         // ready to connect to server.
         start();
     }
@@ -81,6 +85,11 @@ public abstract class AbstractClient extends AbstractPeer implements Client {
                 @Override
                 public void run() {
                     try {
+
+                        if (AbstractClient.this.isDestroyed()) {
+                            return;
+                        }
+
                         connect();
                     } catch (RemotingException e) {
                         logger.warn("Failed to reconnect to server on " + AbstractClient.this.remoteAddress, e);
@@ -88,6 +97,11 @@ public abstract class AbstractClient extends AbstractPeer implements Client {
                 }
             }, this.interval, this.interval, TimeUnit.MILLISECONDS);
         }
+    }
+
+    @Override
+    public void write(Object msg, ChannelPromise promise) throws RemotingException {
+        this.handler.write(this.channel, msg);
     }
 
     @Override
@@ -105,16 +119,17 @@ public abstract class AbstractClient extends AbstractPeer implements Client {
 
     @Override
     public void destroy() {
+        if (destroyed.compareAndSet(false, true)) {
+            /**
+             * Terminate scheduling task(may be reconnecting).
+             */
+            ScheduledFuture<?> future = this.future;
+            if (future != null) {
+                future.cancel(true);
+            }
 
-        /**
-         * Terminate scheduling task(may be reconnecting).
-         */
-        ScheduledFuture<?> future = this.future;
-        if (future != null) {
-            future.cancel(true);
+            shutdown();
         }
-
-        shutdown();
     }
 
     @Override
@@ -127,6 +142,10 @@ public abstract class AbstractClient extends AbstractPeer implements Client {
     @Override
     public SocketAddress remoteAddress() {
         return this.remoteAddress;
+    }
+
+    public int getConnectTimeout() {
+        return connectTimeout;
     }
 
     @Override
