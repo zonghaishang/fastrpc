@@ -98,26 +98,27 @@ public class NettyClient extends AbstractClient implements Client {
                 oldChannel.shutdown();
             }
 
-            if (!this.isDestroyed()) {
-                this.channel = new NettyChannel(future.channel());
-                return this.channel;
+            if (isDestroyed()) {
+                // Close connected channel if we found client is destroyed.
+                future.channel().close();
+                throw new RemotingException(this, "Close connected netty channel " + future.channel() + ", because the client destroyed already.");
             }
+        }
 
-        } else if (future.cause() != null) {
+        if (future.cause() != null) {
             throw new RemotingException(this, "Failed to connect to server "
                     + remoteAddress() + ", error message is:" + future.cause().getMessage(), future.cause());
         }
 
-        if (isDestroyed()) {
-            // Close connected channel if we found client is destroyed.
-            future.channel().close();
-            throw new RemotingException(this, "Close connected netty channel " + future.channel() + ", because the client destroyed already.");
+        if (!completed) {
+            throw new RemotingException(this, "Failed to connect to server "
+                    + remoteAddress() + " client side timeout "
+                    + getConnectTimeout() + "ms (elapsed: " + (System.currentTimeMillis() - start) + "ms) from client "
+                    + NetUtils.getLocalHost());
         }
 
-        throw new RemotingException(this, "Failed to connect to server "
-                + remoteAddress() + " client side timeout "
-                + getConnectTimeout() + "ms (elapsed: " + (System.currentTimeMillis() - start) + "ms) from client "
-                + NetUtils.getLocalHost());
+        this.channel = new NettyChannel(future.channel());
+        return this.channel;
     }
 
     @Override
