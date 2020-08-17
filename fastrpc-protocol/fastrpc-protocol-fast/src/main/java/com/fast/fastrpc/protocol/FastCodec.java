@@ -49,31 +49,33 @@ public class FastCodec implements Codec {
     @Override
     public void encode(Channel channel, IoBuffer buffer, Object message) throws IOException {
         int version = channel.getUrl().getParameter(Constants.PROTOCOL_VERSION, Constants.DEFAULT_PROTOCOL_VERSION);
-        ProtocolCodec codec = protocolCodecs.get(version);
-        if (codec == null) {
-            throw new IOException("unsupported fast protocol version " + version);
-        }
+        ProtocolCodec codec = getProtocolCodec(version);
         codec.encode(channel, buffer, message);
     }
 
     @Override
     public Object decode(Channel channel, IoBuffer buffer) throws IOException {
         int readable = buffer.readableBytes();
-        if (readable >= 2) {
-            byte magic = buffer.getByte(0);
-            if (magic != MAGIC) {
-                throw new IOException("unsupported magic '" + magic + "', expect '0xAF'.");
-            }
+        if (readable < 2) return null;
 
-            int version = buffer.getByte(1);
-            ProtocolCodec codec = protocolCodecs.get(version);
-            if (codec == null) {
-                throw new IOException("unsupported fast protocol version " + version);
-            }
-
-            return codec.decode(channel, buffer);
+        byte magic = buffer.getByte(0);
+        if (magic != MAGIC) {
+            throw new IOException("unsupported magic '" + magic + "', expect '0xAF'.");
         }
-        return null;
+
+        int version = buffer.getByte(1);
+        ProtocolCodec codec = getProtocolCodec(version);
+
+        return codec.decode(channel, buffer);
     }
+
+    private ProtocolCodec getProtocolCodec(int version) throws IOException {
+        ProtocolCodec codec = protocolCodecs.get(version);
+        if (codec == null) {
+            throw new IOException("unsupported fast protocol version " + version);
+        }
+        return codec;
+    }
+
 
 }
