@@ -9,6 +9,7 @@ import com.fast.fastrpc.channel.ChannelPromise;
 import com.fast.fastrpc.channel.DefaultChannelFuture;
 import com.fast.fastrpc.channel.DefaultFuture;
 import com.fast.fastrpc.channel.InvokeFuture;
+import com.fast.fastrpc.common.URL;
 import com.fast.fastrpc.remoting.netty.TimeoutTask;
 import com.fast.fastrpc.remoting.netty.Timer;
 import io.netty.channel.ChannelFuture;
@@ -22,13 +23,17 @@ import java.net.SocketAddress;
  */
 public class NettyChannel implements Channel {
 
+    private URL url;
+
     private io.netty.channel.Channel channel;
 
     private static io.netty.util.AttributeKey<NettyChannel> channelKey = io.netty.util.AttributeKey.valueOf("channelKey");
 
-    public NettyChannel(io.netty.channel.Channel channel) {
+    public NettyChannel(io.netty.channel.Channel channel, URL url) {
         if (this.channel == null) throw new IllegalArgumentException("channel is required.");
+        if (this.url == null) throw new IllegalArgumentException("url is required.");
         this.channel = channel;
+        this.url = url;
     }
 
     @Override
@@ -99,10 +104,10 @@ public class NettyChannel implements Channel {
         return this.channel.hasAttr(internalKey);
     }
 
-    public static NettyChannel getOrAddChannel(io.netty.channel.Channel channel) {
+    public static NettyChannel getOrAddChannel(io.netty.channel.Channel channel, URL url) {
         NettyChannel nettyChannel = channel.attr(channelKey).get();
         if (nettyChannel == null) {
-            nettyChannel = new NettyChannel(channel);
+            nettyChannel = new NettyChannel(channel, url);
             channel.attr(channelKey).setIfAbsent(nettyChannel);
         }
         return nettyChannel;
@@ -121,6 +126,13 @@ public class NettyChannel implements Channel {
     public SocketAddress remoteAddress() {
         return this.channel.remoteAddress();
     }
+
+
+    @Override
+    public URL getUrl() {
+        return this.url;
+    }
+
 
     @Override
     public String toString() {

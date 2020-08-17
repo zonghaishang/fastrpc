@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author yiji
@@ -31,6 +32,8 @@ public final class URL {
 
     private final Map<String, String> parameters;
 
+    private Map<String, Number> numbers;
+
     private volatile String ip;
 
     private volatile String full;
@@ -43,6 +46,7 @@ public final class URL {
         this.port = 0;
         this.path = null;
         this.parameters = null;
+        this.numbers = null;
 
         this.ip = null;
         this.full = null;
@@ -66,6 +70,7 @@ public final class URL {
         HashMap<String, String> copied = new HashMap<>();
         if (parameters != null) copied.putAll(parameters);
         this.parameters = Collections.unmodifiableMap(copied);
+        this.numbers = null;
     }
 
     public String getProtocol() {
@@ -139,6 +144,17 @@ public final class URL {
         return parameters.get(key);
     }
 
+    public Number getNumber(String key) {
+        return getNumbers().get(key);
+    }
+
+    public Map<String, Number> getNumbers() {
+        if (numbers == null) {
+            numbers = new ConcurrentHashMap<>();
+        }
+        return numbers;
+    }
+
     public String getParameter(String key, String defaultValue) {
         String value = getParameter(key);
         if (value == null || value.length() == 0) {
@@ -148,11 +164,17 @@ public final class URL {
     }
 
     public int getParameter(String key, int defaultValue) {
+
+        Number number = getNumber(key);
+        if (number != null) return number.intValue();
+
         String value = getParameter(key);
         if (value == null || (value = value.trim()).length() == 0) {
             return defaultValue;
         }
-        return Integer.parseInt(value);
+        int result = Integer.parseInt(value);
+        getNumbers().put(key, result);
+        return result;
     }
 
     public String[] getParameter(String key, String[] defaultValue) {

@@ -1,0 +1,2 @@
+fast=com.fast.fastrpc.protocol.FastCodec
+fast_1=com.fast.fastrpc.protocol.v1.FastCodecV1

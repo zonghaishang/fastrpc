@@ -1,6 +1,7 @@
 package com.fast.fastrpc.channel;
 
 import com.fast.fastrpc.RemotingException;
+import com.fast.fastrpc.common.URL;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -43,4 +44,6 @@ public interface Channel extends AttributeMap {
     InvokeFuture shutdown();
 
     InvokeFuture shutdown(int timeout);
+
+    URL getUrl();
 }

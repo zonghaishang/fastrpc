@@ -43,7 +43,7 @@ public class NettyCodec {
     private class ProtocolEncoder extends MessageToByteEncoder {
         @Override
         protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf buf) throws Exception {
-            codec.encode(getOrAddChannel(ctx.channel()), Buffer.wrap(buf), msg);
+            codec.encode(getOrAddChannel(ctx.channel(), url), Buffer.wrap(buf), msg);
         }
     }
 
@@ -57,7 +57,7 @@ public class NettyCodec {
 
                 try {
                     buffer.markReaderIndex();
-                    decoded = codec.decode(getOrAddChannel(ctx.channel()), buffer);
+                    decoded = codec.decode(getOrAddChannel(ctx.channel(), url), buffer);
                 } catch (IOException e) {
                     throw e;
                 }

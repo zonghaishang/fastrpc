@@ -30,6 +30,10 @@ public class Constants {
 
     public static final String WORKER_THREADS_KEY = "workers";
 
+    public static final String PROTOCOL_VERSION = "p";
+
+    public static final Integer DEFAULT_PROTOCOL_VERSION = 1;
+
     public static final int DEFAULT_WORKER_THREADS = Math.min(Runtime.getRuntime().availableProcessors() + 1, 32);
 
     public static final Pattern COMMA_SPLIT_PATTERN = Pattern.compile("\\s*[,]+\\s*");

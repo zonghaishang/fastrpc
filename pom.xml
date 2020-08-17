@@ -12,6 +12,7 @@
         <module>fastrpc-common</module>
         <module>fastrpc-protocol</module>
         <module>fastrpc-remoting</module>
+        <module>fastrpc-serialization</module>
     </modules>
 
     <name>fastrpc</name>

@@ -117,7 +117,7 @@ public class NettyClient extends AbstractClient implements Client {
                     + NetUtils.getLocalHost());
         }
 
-        this.channel = new NettyChannel(future.channel());
+        this.channel = new NettyChannel(future.channel(), getUrl());
         return this.channel;
     }
 
