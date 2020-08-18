@@ -11,13 +11,13 @@ public class ServiceUtils {
 
     public static String serviceKey(String path, String uniqueId, String protocol) {
         StringBuffer buf = new StringBuffer();
-        if (path != null && (path = path.trim()).length() > 0) {
+        if (path != null && path.length() > 0) {
             buf.append(path);
         }
-        if (uniqueId != null && (uniqueId = uniqueId.trim()).length() > 0) {
+        if (uniqueId != null && uniqueId.length() > 0) {
             buf.append(":").append(uniqueId);
         }
-        if (protocol != null && (protocol = protocol.trim().toLowerCase()).length() > 0) {
+        if (protocol != null && protocol.length() > 0) {
             buf.append("@").append(protocol);
         }
         return buf.toString();

@@ -172,9 +172,17 @@ public final class URL {
         if (value == null || (value = value.trim()).length() == 0) {
             return defaultValue;
         }
+
         int result = Integer.parseInt(value);
         getNumbers().put(key, result);
         return result;
+    }
+
+    public boolean getParameter(String key, boolean defaultValue) {
+        String value = getParameter(key, (String) null);
+        if (value == null) return defaultValue;
+
+        return value == "true";
     }
 
     public String[] getParameter(String key, String[] defaultValue) {

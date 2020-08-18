@@ -271,6 +271,11 @@ public class Buffer implements IoBuffer {
     }
 
     @Override
+    public boolean release() {
+        return this.buffer.release();
+    }
+
+    @Override
     public IoBuffer skipBytes(int length) {
         this.buffer.skipBytes(length);
         return this;
@@ -358,6 +363,11 @@ public class Buffer implements IoBuffer {
     }
 
     @Override
+    public IoBuffer copy(int index, int length) {
+        return new Buffer(this.buffer.copy(index, length));
+    }
+
+    @Override
     public boolean hasArray() {
         return this.buffer.hasArray();
     }
@@ -373,7 +383,7 @@ public class Buffer implements IoBuffer {
     }
 
     @Override
-    public Object unwrap() {
+    public ByteBuf unwrap() {
         return this.buffer;
     }
 }

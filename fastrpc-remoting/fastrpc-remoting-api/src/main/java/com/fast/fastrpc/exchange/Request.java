@@ -1,7 +1,6 @@
 package com.fast.fastrpc.exchange;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author yiji
@@ -24,6 +23,12 @@ public class Request {
     private boolean readOnly = false;
 
     private int timeout;
+
+    private int serializeId;
+
+    private byte compress;
+
+    private byte protocolVersion;
 
     private Object payload;
 
@@ -63,8 +68,8 @@ public class Request {
         return broken;
     }
 
-    public void setBroken(boolean mBroken) {
-        this.broken = mBroken;
+    public void setBroken(boolean broken) {
+        this.broken = broken;
     }
 
     public boolean isHeartbeat() {
@@ -97,5 +102,29 @@ public class Request {
 
     public void setTimeout(int timeout) {
         this.timeout = timeout;
+    }
+
+    public int getSerializeId() {
+        return serializeId;
+    }
+
+    public void setSerializeId(int serializeId) {
+        this.serializeId = serializeId;
+    }
+
+    public byte getCompress() {
+        return compress;
+    }
+
+    public void setCompress(byte compress) {
+        this.compress = compress;
+    }
+
+    public byte getProtocolVersion() {
+        return protocolVersion;
+    }
+
+    public void setProtocolVersion(byte code) {
+        this.protocolVersion = code;
     }
 }

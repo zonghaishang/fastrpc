@@ -67,6 +67,7 @@ public class RpcInvocation implements Invocation {
             if (app != null && app.length() > 0) {
                 setAttachment(Constants.APPLICATION_KEY, app);
             }
+            setAttachment(Constants.PROTOCOL_VERSION, url.getParameter(Constants.PROTOCOL_VERSION, String.valueOf(Constants.DEFAULT_PROTOCOL_VERSION)));
         }
 
     }

@@ -417,6 +417,8 @@ public interface IoBuffer {
 
     IoBuffer touch();
 
+    boolean release();
+
     /**
      * Increases the current {@code readerIndex} by the specified
      * {@code length} in this buffer.
@@ -562,6 +564,8 @@ public interface IoBuffer {
      */
     IoBuffer copy();
 
+    IoBuffer copy(int index, int length);
+
     /**
      * Returns {@code true} if and only if this buffer has a backing byte array.
      * If this method returns true, you can safely call {@link #array()} and
@@ -584,5 +588,5 @@ public interface IoBuffer {
      */
     int arrayOffset();
 
-    Object unwrap();
+    <T> T unwrap();
 }

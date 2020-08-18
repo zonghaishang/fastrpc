@@ -14,6 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static com.fast.fastrpc.protocol.codec.AbstractFastCodec.magicIndex;
+import static com.fast.fastrpc.protocol.codec.AbstractFastCodec.versionIndex;
+
 /**
  * @author yiji
  * @version : FastCodec.java, v 0.1 2020-08-17
@@ -29,21 +32,7 @@ public class FastCodec implements Codec {
     private final static ExtensionLoader<Codec> codecExtensionLoader = ExtensionLoader.getExtensionLoader(Codec.class);
 
     static {
-        Set<String> supported = codecExtensionLoader.getSupportedExtensions();
-        if (supported != null && !supported.isEmpty()) {
-            for (String name : supported) {
-                Codec codec = codecExtensionLoader.getExtension(name);
-                if (codec instanceof ProtocolCodec) {
-                    ProtocolCodec loadedCodec = (ProtocolCodec) codec;
-                    ProtocolCodec cachedCodec = protocolCodecs.get(loadedCodec.getVersion());
-                    if (cachedCodec == null) {
-                        protocolCodecs.put(loadedCodec.getVersion(), loadedCodec);
-                        continue;
-                    }
-                    logger.warn("Found duplicate protocol codec " + name + " type '" + codec.getClass().getName() + "' version " + cachedCodec.getVersion());
-                }
-            }
-        }
+        loadFastCodec();
     }
 
     @Override
@@ -58,12 +47,12 @@ public class FastCodec implements Codec {
         int readable = buffer.readableBytes();
         if (readable < 2) return null;
 
-        byte magic = buffer.getByte(0);
+        byte magic = buffer.getByte(magicIndex);
         if (magic != MAGIC) {
             throw new IOException("unsupported magic '" + magic + "', expect '0xAF'.");
         }
 
-        int version = buffer.getByte(1);
+        int version = buffer.getByte(versionIndex);
         ProtocolCodec codec = getProtocolCodec(version);
 
         return codec.decode(channel, buffer);
@@ -77,5 +66,23 @@ public class FastCodec implements Codec {
         return codec;
     }
 
-
+    private static void loadFastCodec() {
+        Set<String> supported = codecExtensionLoader.getSupportedExtensions();
+        if (supported != null && !supported.isEmpty()) {
+            for (String name : supported) {
+                Codec codec = codecExtensionLoader.getExtension(name);
+                if (codec instanceof ProtocolCodec) {
+                    ProtocolCodec loadedCodec = (ProtocolCodec) codec;
+                    if (protocolCodecs.containsKey(loadedCodec.getVersion())) {
+                        logger.error("Found duplicate protocol codec " + name
+                                + " type " + codec.getClass().getName()
+                                + " version " + loadedCodec.getVersion()
+                                + ", existed codec " + protocolCodecs.get(loadedCodec.getVersion()).getClass().getName());
+                        continue;
+                    }
+                    protocolCodecs.put(loadedCodec.getVersion(), loadedCodec);
+                }
+            }
+        }
+    }
 }

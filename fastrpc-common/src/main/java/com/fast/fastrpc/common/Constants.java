@@ -30,9 +30,15 @@ public class Constants {
 
     public static final String WORKER_THREADS_KEY = "workers";
 
+    public static final String DECODE_IN_KEY = "decode.io";
+
     public static final String PROTOCOL_VERSION = "p";
 
     public static final Integer DEFAULT_PROTOCOL_VERSION = 1;
+
+    public static final String SERIALIZATION_KEY = "serialization";
+
+    public static final String DEFAULT_SERIALIZATION = "hessian4";
 
     public static final int DEFAULT_WORKER_THREADS = Math.min(Runtime.getRuntime().availableProcessors() + 1, 32);
 

@@ -16,11 +16,6 @@ public abstract class AbstractCodec implements Codec {
     protected static final int HEADER_LENGTH = 16;
 
     @Override
-    public Object decode(Channel channel, IoBuffer buffer) throws IOException {
-        return decodePayload(channel, buffer);
-    }
-
-    @Override
     public void encode(Channel channel, IoBuffer buffer, Object message) throws IOException {
         if (message instanceof Request) {
             encodeRequest(channel, buffer, (Request) message);
@@ -29,8 +24,6 @@ public abstract class AbstractCodec implements Codec {
         }
         throw new IOException("Failed to encode unsupported message type " + message.getClass().getName());
     }
-
-    protected abstract Object decodePayload(Channel channel, IoBuffer buffer) throws IOException;
 
     protected abstract void encodeRequest(Channel channel, IoBuffer buffer, Request request) throws IOException;
 

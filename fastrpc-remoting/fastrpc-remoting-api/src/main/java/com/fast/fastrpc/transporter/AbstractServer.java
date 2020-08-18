@@ -10,6 +10,7 @@ import com.fast.fastrpc.common.URL;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author yiji
@@ -21,6 +22,8 @@ public abstract class AbstractServer extends AbstractPeer implements Server {
 
     protected volatile Channel channel;
 
+    protected AtomicBoolean started = new AtomicBoolean();
+
     public AbstractServer(URL url, ChannelHandler handler) throws RemotingException {
         super(url, handler);
         // ready to start server.
@@ -29,14 +32,16 @@ public abstract class AbstractServer extends AbstractPeer implements Server {
 
     @Override
     public void start() throws RemotingException {
-        this.address = new InetSocketAddress(getUrl().getHost(), getUrl().getPort());
-        try {
-            this.channel = doBind();
-            if (logger.isInfoEnabled()) {
-                logger.info("success to start server on " + this.address);
+        if (started.compareAndSet(false, true)) {
+            this.address = new InetSocketAddress(getUrl().getHost(), getUrl().getPort());
+            try {
+                this.channel = doBind();
+                if (logger.isInfoEnabled()) {
+                    logger.info("success to start server on " + this.address);
+                }
+            } catch (Throwable e) {
+                throw new RemotingException(this.channel, "Failed to start server.");
             }
-        } catch (Throwable e) {
-            throw new RemotingException(this.channel, "Failed to start server.");
         }
     }
 
