@@ -2,6 +2,10 @@ package com.fast.fastrpc.remoting.netty.buffer;
 
 import io.netty.buffer.ByteBuf;
 
+import java.nio.charset.Charset;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 /**
  * @author yiji
  * @version : PooledBuffer.java, v 0.1 2020-08-03
@@ -118,6 +122,16 @@ public class Buffer implements IoBuffer {
     @Override
     public long getLong(int index) {
         return this.buffer.getLong(index);
+    }
+
+    @Override
+    public CharSequence getCharSequence(int index, int length) {
+        return getCharSequence(index, length, UTF_8);
+    }
+
+    @Override
+    public CharSequence getCharSequence(int index, int length, Charset charset) {
+        return this.buffer.getCharSequence(index, length, charset);
     }
 
     @Override
@@ -238,6 +252,16 @@ public class Buffer implements IoBuffer {
     }
 
     @Override
+    public CharSequence readCharSequence(int length) {
+        return readCharSequence(length, UTF_8);
+    }
+
+    @Override
+    public CharSequence readCharSequence(int length, Charset charset) {
+        return this.buffer.readCharSequence(length, charset);
+    }
+
+    @Override
     public char readChar() {
         return this.buffer.readChar();
     }
@@ -320,6 +344,17 @@ public class Buffer implements IoBuffer {
     @Override
     public IoBuffer writeChar(int value) {
         this.buffer.writeChar(value);
+        return this;
+    }
+
+    @Override
+    public IoBuffer writeCharSequence(CharSequence sequence) {
+        return writeCharSequence(sequence, UTF_8);
+    }
+
+    @Override
+    public IoBuffer writeCharSequence(CharSequence sequence, Charset charset) {
+        this.buffer.writeCharSequence(sequence, charset);
         return this;
     }
 

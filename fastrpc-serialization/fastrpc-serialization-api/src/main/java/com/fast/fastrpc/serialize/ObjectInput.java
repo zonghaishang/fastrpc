@@ -25,9 +25,13 @@ public interface ObjectInput {
 
     double readDouble() throws IOException;
 
+    String readUTF() throws IOException;
+
+    byte[] readBytes() throws IOException;
+
     Object readObject() throws IOException;
 
     <T> T readObject(Class<T> clazz) throws IOException;
 
-    <T> T readObject(Class<T> clazz, Type type) throws IOException;
+    <T> T readObject(Class<T> clazz, Type genericType) throws IOException;
 }

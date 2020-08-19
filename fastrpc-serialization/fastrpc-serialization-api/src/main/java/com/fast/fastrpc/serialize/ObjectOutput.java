@@ -24,6 +24,8 @@ public interface ObjectOutput {
 
     void writeDouble(double value) throws IOException;
 
+    void writeUTF(String v) throws IOException;
+
     void writeBytes(byte[] src) throws IOException;
 
     void writeBytes(byte[] v, int off, int len) throws IOException;

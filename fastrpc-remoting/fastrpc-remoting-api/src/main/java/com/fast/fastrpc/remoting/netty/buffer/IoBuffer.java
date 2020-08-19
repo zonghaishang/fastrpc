@@ -1,5 +1,7 @@
 package com.fast.fastrpc.remoting.netty.buffer;
 
+import java.nio.charset.Charset;
+
 /**
  * @author yiji
  * @version : IoBuffer.java, v 0.1 2020-08-03
@@ -156,6 +158,10 @@ public interface IoBuffer {
      *                                   {@code index + 8} is greater than {@code this.capacity}
      */
     long getLong(int index);
+
+    CharSequence getCharSequence(int index, int length);
+
+    CharSequence getCharSequence(int index, int length, Charset charset);
 
     /**
      * Gets a 2-byte UTF-16 character at the specified absolute
@@ -375,6 +381,10 @@ public interface IoBuffer {
      */
     long readLong();
 
+    CharSequence readCharSequence(int length);
+
+    CharSequence readCharSequence(int length, Charset charset);
+
     /**
      * Gets a 2-byte UTF-16 character at the current {@code readerIndex}
      * and increases the {@code readerIndex} by {@code 2} in this buffer.
@@ -479,6 +489,9 @@ public interface IoBuffer {
      */
     IoBuffer writeLong(long value);
 
+    IoBuffer writeCharSequence(CharSequence sequence);
+
+    IoBuffer writeCharSequence(CharSequence sequence, Charset charset);
 
     /**
      * Sets the specified 2-byte UTF-16 character at the current

@@ -32,6 +32,8 @@ public class Constants {
 
     public static final String DECODE_IN_KEY = "decode.io";
 
+    public static final String METHOD_KEY = "method";
+
     public static final String PROTOCOL_VERSION = "p";
 
     public static final Integer DEFAULT_PROTOCOL_VERSION = 1;
