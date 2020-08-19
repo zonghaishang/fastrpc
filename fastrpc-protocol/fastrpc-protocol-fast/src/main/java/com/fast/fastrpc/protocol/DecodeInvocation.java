@@ -66,25 +66,23 @@ public class DecodeInvocation extends RpcInvocation implements Decoder {
 
                 setMethodName(getAttachment(Constants.METHOD_KEY));
 
-                Object[] arguments;
-                Class<?>[] parameterTypes;
-
                 String desc = input.readUTF();
                 if (desc == null || desc.length() == 0) {
-                    parameterTypes = EMPTY_CLASS_ARRAY;
-                    arguments = EMPTY_OBJECT_ARRAY;
-                } else {
-                    parameterTypes = ReflectUtils.desc2classArray(desc);
-                    arguments = new Object[parameterTypes.length];
-                    for (int i = 0; i < arguments.length; i++) {
-                        try {
-                            arguments[i] = input.readObject(parameterTypes[i]);
-                        } catch (Exception e) {
-                            if (logger.isWarnEnabled()) {
-                                logger.warn("Failed to decode argument : " + e.getMessage(), e);
-                            }
-                            throw e;
+                    setParameterTypes(EMPTY_CLASS_ARRAY);
+                    setArguments(EMPTY_OBJECT_ARRAY);
+                    return;
+                }
+
+                Class<?>[] parameterTypes = ReflectUtils.desc2classArray(desc);
+                Object[] arguments = new Object[parameterTypes.length];
+                for (int i = 0; i < arguments.length; i++) {
+                    try {
+                        arguments[i] = input.readObject(parameterTypes[i]);
+                    } catch (Exception e) {
+                        if (logger.isWarnEnabled()) {
+                            logger.warn("Failed to decode argument : " + e.getMessage(), e);
                         }
+                        throw e;
                     }
                 }
 
