@@ -102,5 +102,4 @@ public class DecodeInvocation extends RpcInvocation implements Decoder {
             }
         }
     }
-
 }

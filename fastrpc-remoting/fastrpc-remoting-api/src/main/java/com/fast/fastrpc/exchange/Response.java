@@ -50,7 +50,7 @@ public class Response {
         this.version = version;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 

@@ -1,5 +1,6 @@
 package com.fast.fastrpc;
 
+import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
@@ -14,6 +15,20 @@ public interface Invocation {
      * @serial
      */
     String getMethodName();
+
+    /**
+     * get method return type.  An optional value(maybe return NULL)
+     *
+     * @return method return type.
+     */
+    Class<?> getReturnType();
+
+    /**
+     * get method return type.  An optional value(maybe return NULL)
+     *
+     * @return method return type.
+     */
+    Type getGenericReturnType();
 
     /**
      * get parameter types.

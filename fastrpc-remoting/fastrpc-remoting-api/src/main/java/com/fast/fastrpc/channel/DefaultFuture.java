@@ -42,8 +42,6 @@ public class DefaultFuture implements InvokeFuture {
 
     private volatile List<InvokeListener> invokeCallbacks = new CopyOnWriteArrayList<>();
 
-//    private volatile OperationListener operationListener;
-
     private int defaultTimeout = 3000;
 
     private Timeout timeout;
@@ -56,6 +54,12 @@ public class DefaultFuture implements InvokeFuture {
 
     public DefaultFuture(Channel channel, int invokeId) {
         this(channel, invokeId, null);
+    }
+
+    public DefaultFuture(Channel channel, Request request) {
+        this.channel = channel;
+        this.request = request;
+        this.invokeId = this.request.getId();
     }
 
     public DefaultFuture(Channel channel, Throwable cause) {
@@ -98,6 +102,10 @@ public class DefaultFuture implements InvokeFuture {
     @Override
     public int invokeId() {
         return this.invokeId;
+    }
+
+    public Request getRequest() {
+        return request;
     }
 
     public void receive(Object value) {
@@ -178,27 +186,4 @@ public class DefaultFuture implements InvokeFuture {
     public Throwable cause() {
         return this.cause;
     }
-
-    // internal netty future.
-//    public void setFuture(Future<?> future) {
-//        this.future = future;
-//        if (future != null && future.isDone()) {
-//            executeOperation();
-//        }
-//    }
-//
-//    public void executeOperation() {
-//        Future<?> f = future;
-//        if (this.operationListener != null && f != null) {
-//            this.operationListener.complete(f);
-//        }
-//    }
-//
-//    public void setOperationListener(OperationListener operationListener) {
-//        this.operationListener = operationListener;
-//        Future<?> f = this.future;
-//        if (f != null && f.isDone()) {
-//            executeOperation();
-//        }
-//    }
 }

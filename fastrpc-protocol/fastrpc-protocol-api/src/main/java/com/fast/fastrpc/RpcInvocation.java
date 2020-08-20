@@ -5,6 +5,7 @@ import com.fast.fastrpc.common.URL;
 import com.fast.fastrpc.common.utils.ServiceUtils;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +17,10 @@ import java.util.Map;
 public class RpcInvocation implements Invocation {
 
     private String methodName;
+
+    private Class<?> returnType;
+
+    private Type genericReturnType;
 
     private Class<?>[] parameterTypes;
 
@@ -29,28 +34,26 @@ public class RpcInvocation implements Invocation {
     }
 
     public RpcInvocation(Invocation invocation) {
-        this(invocation.getMethodName(), invocation.getParameterTypes(),
-                invocation.getArguments(), invocation.getAttachments(), invocation.getInvoker());
+        this(invocation.getMethodName(), invocation.getParameterTypes(), invocation.getArguments(), invocation.getReturnType(),
+                invocation.getGenericReturnType(), invocation.getAttachments(), invocation.getInvoker());
     }
 
     public RpcInvocation(Method method, Object[] arguments) {
-        this(method.getName(), method.getParameterTypes(), arguments, null, null);
+        this(method.getName(), method.getParameterTypes(), arguments, method.getReturnType(), method.getGenericReturnType(), null, null);
     }
 
     public RpcInvocation(Method method, Object[] arguments, Map<String, String> attachment) {
-        this(method.getName(), method.getParameterTypes(), arguments, attachment, null);
+        this(method.getName(), method.getParameterTypes(), arguments, method.getReturnType(), method.getGenericReturnType(), attachment, null);
     }
 
     public RpcInvocation(String methodName, Class<?>[] parameterTypes, Object[] arguments) {
-        this(methodName, parameterTypes, arguments, null, null);
+        this(methodName, parameterTypes, arguments, null, null, null, null);
     }
 
-    public RpcInvocation(String methodName, Class<?>[] parameterTypes, Object[] arguments, Map<String, String> attachments) {
-        this(methodName, parameterTypes, arguments, attachments, null);
-    }
-
-    public RpcInvocation(String methodName, Class<?>[] parameterTypes, Object[] arguments, Map<String, String> attachments, Invoker<?> invoker) {
+    public RpcInvocation(String methodName, Class<?>[] parameterTypes, Object[] arguments, Class<?> returnType, Type genericReturnType, Map<String, String> attachments, Invoker<?> invoker) {
         this.methodName = methodName;
+        this.returnType = returnType;
+        this.genericReturnType = genericReturnType;
         this.parameterTypes = parameterTypes == null ? new Class<?>[0] : parameterTypes;
         this.arguments = arguments == null ? new Object[0] : arguments;
         this.attachments = attachments == null ? new HashMap<String, String>() : attachments;
@@ -86,6 +89,16 @@ public class RpcInvocation implements Invocation {
         return methodName;
     }
 
+    @Override
+    public Class<?> getReturnType() {
+        return returnType;
+    }
+
+    @Override
+    public Type getGenericReturnType() {
+        return genericReturnType;
+    }
+
     public void setMethodName(String methodName) {
         this.methodName = methodName;
     }
@@ -119,7 +132,7 @@ public class RpcInvocation implements Invocation {
 
     public void setAttachment(String key, String value) {
         if (attachments == null) {
-            attachments = new HashMap<String, String>();
+            attachments = new HashMap<>();
         }
         attachments.put(key, value);
     }
@@ -138,7 +151,7 @@ public class RpcInvocation implements Invocation {
             return;
         }
         if (this.attachments == null) {
-            this.attachments = new HashMap<String, String>();
+            this.attachments = new HashMap<>();
         }
         this.attachments.putAll(attachments);
     }

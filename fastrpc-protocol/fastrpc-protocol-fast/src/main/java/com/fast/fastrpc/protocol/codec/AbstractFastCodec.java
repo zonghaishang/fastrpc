@@ -57,6 +57,8 @@ public abstract class AbstractFastCodec extends AbstractCodec {
         byte flag = buffer.getByte(flagIndex);
         int requestType = flag >> requestTypeOffset;
 
+        int readerIndex = buffer.readerIndex();
+
         try {
             switch (requestType) {
                 case RESPONSE: {
@@ -74,7 +76,7 @@ public abstract class AbstractFastCodec extends AbstractCodec {
             /**
              * Discard the data that has been read.
              */
-            buffer.skipBytes(length);
+            buffer.readerIndex(readerIndex + length);
         }
     }
 
