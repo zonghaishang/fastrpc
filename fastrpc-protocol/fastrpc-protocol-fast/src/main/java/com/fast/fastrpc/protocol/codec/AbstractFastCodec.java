@@ -20,20 +20,25 @@ public abstract class AbstractFastCodec extends AbstractCodec {
 
     public static final int VERSION_1 = 1;
 
+    public static final int magicIndex = 0;
+    public static final int versionIndex = 1;
+    public static final int flagIndex = 2;
+    public static final int codecIndex = 3;
+    public static final int idIndex = 4;
+    public static final int requestTypeOffset = 6;
+    public static final int timeoutIndex = 8;
+    public static final int statusIndex = 8;
     public static final int headerIndex = 10;
     public static final int payloadIndex = 12;
     public static final int attachmentIndex = 16;
-    public static final int flagIndex = 2;
-
-    public static final int magicIndex = 0;
-    public static final int versionIndex = 1;
-    public static final int codecIndex = 3;
-    public static final int requestTypeOffset = 6;
-    public static final int idIndex = 4;
 
     public static final byte heartbeatMask = 0x20;
     public static final byte readonlyMask = 0x10;
     public static final byte compressMask = 0x0f;
+
+    public static final byte NULL = 0;
+    public static final byte EXCEPTION = 1;
+    public static final byte NORMAL = 2;
 
     public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
     public static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];

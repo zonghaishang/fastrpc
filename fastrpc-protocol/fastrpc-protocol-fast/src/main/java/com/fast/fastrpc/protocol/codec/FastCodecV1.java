@@ -8,6 +8,7 @@ import com.fast.fastrpc.common.logger.LoggerFactory;
 import com.fast.fastrpc.exchange.Request;
 import com.fast.fastrpc.exchange.Response;
 import com.fast.fastrpc.protocol.DecodeInvocation;
+import com.fast.fastrpc.protocol.DecodeRpcResult;
 import com.fast.fastrpc.remoting.netty.buffer.IoBuffer;
 
 import java.io.IOException;
@@ -21,7 +22,7 @@ public class FastCodecV1 extends AbstractFastCodec implements ProtocolCodec {
     protected Logger logger = LoggerFactory.getLogger(FastCodecV1.class);
 
     @Override
-    protected Request decodeRequest(Channel channel, IoBuffer buffer, int length) throws IOException {
+    protected Request decodeRequest(Channel channel, IoBuffer buffer, int length) {
 
         int id = buffer.getInt(idIndex);
         Request request = new Request(id);
@@ -33,29 +34,25 @@ public class FastCodecV1 extends AbstractFastCodec implements ProtocolCodec {
             byte flag = buffer.getByte(flagIndex);
             int requestType = flag >> requestTypeOffset;
             request.setOneWay((requestType & ONEWAY) != 0);
-
-            /**
-             * We received the heartbeat request packet.
-             */
-            if ((flag & heartbeatMask) != 0) {
-                request.setHeartbeat(true);
-                return request;
-            }
-
-            /**
-             * We received the ready only request packet(server maybe offline).
-             */
-            if ((flag & readonlyMask) != 0) {
-                request.setReadOnly(true);
-                return request;
-            }
-
             request.setCompress((byte) (flag & compressMask));
 
             byte serializeId = buffer.getByte(codecIndex);
             request.setSerializeId(serializeId);
 
-            /**
+            short timeout = buffer.getShort(timeoutIndex);
+            request.setTimeout(timeout);
+
+            if ((flag & heartbeatMask) != 0) {
+                request.setHeartbeat(true);
+                return request;
+            }
+
+            if ((flag & readonlyMask) != 0) {
+                request.setReadOnly(true);
+                return request;
+            }
+
+            /*
              * 1. If decode in IO threads, we can avoid memory copy.
              * 2. Allows decoding in the user thread pool.
              */
@@ -70,7 +67,9 @@ public class FastCodecV1 extends AbstractFastCodec implements ProtocolCodec {
             }
             request.setPayload(invocation);
         } catch (Throwable e) {
-            logger.warn("Failed to decode request.", e);
+            if (logger.isWarnEnabled()) {
+                logger.warn("Failed to decode request.", e);
+            }
             request.setBroken(true);
             // ?? wrap decode exception ?
             request.setPayload(e);
@@ -80,8 +79,57 @@ public class FastCodecV1 extends AbstractFastCodec implements ProtocolCodec {
     }
 
     @Override
-    protected Response decodeResponse(Channel channel, IoBuffer buffer, int length) throws IOException {
-        return null;
+    protected Response decodeResponse(Channel channel, IoBuffer buffer, int length) {
+
+        int id = buffer.getInt(idIndex);
+        Response response = new Response(id);
+
+        try {
+            byte protocolVersion = buffer.getByte(versionIndex);
+            response.setProtocolVersion(protocolVersion);
+
+            byte flag = buffer.getByte(flagIndex);
+            response.setCompress((byte) (flag & compressMask));
+
+            byte serializeId = buffer.getByte(codecIndex);
+            response.setSerializeId(serializeId);
+
+            short status = buffer.getShort(statusIndex);
+            response.setStatus(status);
+
+            if ((flag & heartbeatMask) != 0) {
+                response.setHeartbeat(true);
+                return response;
+            }
+
+            if ((flag & readonlyMask) != 0) {
+                response.setReadOnly(true);
+                return response;
+            }
+
+            /*
+             * 1. If decode in IO threads, we can avoid memory copy.
+             * 2. Allows decoding in the user thread pool.
+             */
+            boolean decodeInIo = channel.getUrl().getParameter(Constants.DECODE_IN_KEY, true);
+            DecodeRpcResult rpcResult;
+            if (decodeInIo) {
+                rpcResult = new DecodeRpcResult(channel, response, buffer, true);
+                rpcResult.decode();
+            } else {
+                // we need to wrap buffer.
+                rpcResult = new DecodeRpcResult(channel, response, buffer.copy(buffer.readerIndex(), length), false);
+            }
+            response.setPayload(rpcResult);
+        } catch (Throwable e) {
+            if (logger.isWarnEnabled()) {
+                logger.warn("Failed to decode request.", e);
+            }
+            // ?? wrap decode exception ?
+            response.setPayload(e);
+        }
+
+        return response;
     }
 
     @Override

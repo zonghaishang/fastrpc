@@ -6,23 +6,23 @@ package com.fast.fastrpc.exchange;
  */
 public class Response {
 
-    public static final byte OK = 0;
-    public static final byte CLIENT_TIMEOUT = 1;
-    public static final byte SERVER_TIMEOUT = 2;
-    public static final byte CHANNEL_INACTIVE = 3;
-    public static final byte BAD_REQUEST = 4;
-    public static final byte BAD_RESPONSE = 5;
-    public static final byte SERVICE_NOT_FOUND = 6;
-    public static final byte SERVICE_ERROR = 7;
-    public static final byte SERVER_ERROR = 8;
-    public static final byte CLIENT_ERROR = 9;
-    public static final byte SERVER_POOL_EXHAUSTED_ERROR = 10;
+    public static final short OK = 0;
+    public static final short CLIENT_TIMEOUT = 1;
+    public static final short SERVER_TIMEOUT = 2;
+    public static final short CHANNEL_INACTIVE = 3;
+    public static final short BAD_REQUEST = 4;
+    public static final short BAD_RESPONSE = 5;
+    public static final short SERVICE_NOT_FOUND = 6;
+    public static final short SERVICE_ERROR = 7;
+    public static final short SERVER_ERROR = 8;
+    public static final short CLIENT_ERROR = 9;
+    public static final short SERVER_POOL_EXHAUSTED_ERROR = 10;
 
     private int id = 0;
 
     private String version;
 
-    private byte status = OK;
+    private short status = OK;
 
     private String error;
 
@@ -31,6 +31,12 @@ public class Response {
     private boolean heartbeat = false;
 
     private boolean readOnly = false;
+
+    private int serializeId;
+
+    private byte compress;
+
+    private byte protocolVersion;
 
     public Response() {
     }
@@ -60,11 +66,11 @@ public class Response {
         this.version = version;
     }
 
-    public byte getStatus() {
+    public short getStatus() {
         return status;
     }
 
-    public void setStatus(byte status) {
+    public void setStatus(short status) {
         this.status = status;
     }
 
@@ -98,5 +104,29 @@ public class Response {
 
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
+    }
+
+    public int getSerializeId() {
+        return serializeId;
+    }
+
+    public void setSerializeId(int serializeId) {
+        this.serializeId = serializeId;
+    }
+
+    public byte getCompress() {
+        return compress;
+    }
+
+    public void setCompress(byte compress) {
+        this.compress = compress;
+    }
+
+    public byte getProtocolVersion() {
+        return protocolVersion;
+    }
+
+    public void setProtocolVersion(byte protocolVersion) {
+        this.protocolVersion = protocolVersion;
     }
 }

@@ -79,8 +79,8 @@ public class DecodeInvocation extends RpcInvocation implements Decoder {
                     try {
                         arguments[i] = input.readObject(parameterTypes[i]);
                     } catch (Exception e) {
-                        if (logger.isWarnEnabled()) {
-                            logger.warn("Failed to decode argument : " + e.getMessage(), e);
+                        if (logger.isErrorEnabled()) {
+                            logger.error("Failed to decode argument : " + e.getMessage(), e);
                         }
                         throw e;
                     }
