@@ -1,7 +1,7 @@
 package com.fast.fastrpc.serialize;
 
 import com.fast.fastrpc.common.URL;
-import com.fast.fastrpc.remoting.netty.buffer.IoBuffer;
+import com.fast.fastrpc.common.buffer.IoBuffer;
 
 import java.io.IOException;
 

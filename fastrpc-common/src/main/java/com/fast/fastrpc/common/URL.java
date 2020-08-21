@@ -179,10 +179,10 @@ public final class URL {
     }
 
     public boolean getParameter(String key, boolean defaultValue) {
-        String value = getParameter(key, (String) null);
+        String value = parameters.get(key);
         if (value == null) return defaultValue;
 
-        return value == "true";
+        return "true".equals(value);
     }
 
     public String[] getParameter(String key, String[] defaultValue) {

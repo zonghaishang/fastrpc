@@ -13,7 +13,7 @@
     <dependencies>
         <dependency>
             <groupId>com.fast</groupId>
-            <artifactId>fastrpc-common</artifactId>
+            <artifactId>fastrpc-serialization-api</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
     </dependencies>

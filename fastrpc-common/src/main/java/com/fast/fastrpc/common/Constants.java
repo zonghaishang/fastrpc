@@ -30,11 +30,13 @@ public class Constants {
 
     public static final String WORKER_THREADS_KEY = "workers";
 
-    public static final String DECODE_IN_KEY = "decode.io";
+    public static final String CODEC_IN_IO_KEY = "codec.io";
 
     public static final String METHOD_KEY = "method";
 
     public static final String PROTOCOL_VERSION = "p";
+
+    public static final String CODEC_KEY = "codec";
 
     public static final Integer DEFAULT_PROTOCOL_VERSION = 1;
 

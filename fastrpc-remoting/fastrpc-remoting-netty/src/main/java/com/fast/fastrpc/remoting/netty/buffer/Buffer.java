@@ -1,5 +1,6 @@
 package com.fast.fastrpc.remoting.netty.buffer;
 
+import com.fast.fastrpc.common.buffer.IoBuffer;
 import io.netty.buffer.ByteBuf;
 
 import java.nio.charset.Charset;
@@ -379,6 +380,18 @@ public class Buffer implements IoBuffer {
     @Override
     public IoBuffer writeBytes(byte[] src, int srcIndex, int length) {
         this.buffer.writeBytes(src, srcIndex, length);
+        return this;
+    }
+
+    @Override
+    public IoBuffer writeBytes(IoBuffer src) {
+        this.buffer.writeBytes(src.<ByteBuf>unwrap());
+        return this;
+    }
+
+    @Override
+    public IoBuffer writeBytes(IoBuffer src, int length) {
+        this.buffer.writeBytes(src.<ByteBuf>unwrap(), length);
         return this;
     }
 

@@ -12,6 +12,8 @@ import com.fast.fastrpc.channel.InvokeFuture;
 import com.fast.fastrpc.common.URL;
 import com.fast.fastrpc.remoting.netty.TimeoutTask;
 import com.fast.fastrpc.remoting.netty.Timer;
+import com.fast.fastrpc.remoting.netty.buffer.Buffer;
+import com.fast.fastrpc.common.buffer.IoBuffer;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 
@@ -133,7 +135,6 @@ public class NettyChannel implements Channel {
         return this.url;
     }
 
-
     @Override
     public String toString() {
         return localAddress() + " -> " + remoteAddress();
@@ -141,5 +142,15 @@ public class NettyChannel implements Channel {
 
     public io.netty.channel.Channel getChannel() {
         return channel;
+    }
+
+    @Override
+    public IoBuffer allocate() {
+        return Buffer.wrap(this.channel.alloc().buffer());
+    }
+
+    @Override
+    public IoBuffer allocate(int capacity) {
+        return Buffer.wrap(this.channel.alloc().buffer(capacity));
     }
 }

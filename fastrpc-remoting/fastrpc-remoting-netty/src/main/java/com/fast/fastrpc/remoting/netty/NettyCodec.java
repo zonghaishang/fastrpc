@@ -3,7 +3,7 @@ package com.fast.fastrpc.remoting.netty;
 import com.fast.fastrpc.Codec;
 import com.fast.fastrpc.common.URL;
 import com.fast.fastrpc.remoting.netty.buffer.Buffer;
-import com.fast.fastrpc.remoting.netty.buffer.IoBuffer;
+import com.fast.fastrpc.common.buffer.IoBuffer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;

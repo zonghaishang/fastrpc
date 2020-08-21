@@ -2,9 +2,9 @@ package com.fast.fastrpc.protocol.codec;
 
 import com.fast.fastrpc.AbstractCodec;
 import com.fast.fastrpc.channel.Channel;
+import com.fast.fastrpc.common.buffer.IoBuffer;
 import com.fast.fastrpc.exchange.Request;
 import com.fast.fastrpc.exchange.Response;
-import com.fast.fastrpc.remoting.netty.buffer.IoBuffer;
 
 import java.io.IOException;
 
@@ -35,6 +35,8 @@ public abstract class AbstractFastCodec extends AbstractCodec {
     public static final byte heartbeatMask = 0x20;
     public static final byte readonlyMask = 0x10;
     public static final byte compressMask = 0x0f;
+
+    public static final byte magic = (byte) 0xaf;
 
     public static final byte NULL = 0;
     public static final byte EXCEPTION = 1;

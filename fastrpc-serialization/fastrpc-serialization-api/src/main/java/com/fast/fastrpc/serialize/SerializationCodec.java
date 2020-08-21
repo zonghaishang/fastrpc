@@ -1,5 +1,7 @@
 package com.fast.fastrpc.serialize;
 
+import com.fast.fastrpc.common.Constants;
+import com.fast.fastrpc.common.URL;
 import com.fast.fastrpc.common.logger.Logger;
 import com.fast.fastrpc.common.logger.LoggerFactory;
 import com.fast.fastrpc.common.spi.ExtensionLoader;
@@ -55,6 +57,16 @@ public class SerializationCodec {
         Serialization serialization = idSerializations.get(id);
         if (serialization == null) {
             throw new IOException("unsupported serialization id " + id + ", available : " + supportSerialization);
+        }
+
+        return serialization;
+    }
+
+    public static Serialization getSerialization(URL url) throws IOException {
+        String name = url.getParameter(Constants.SERIALIZATION_KEY, Constants.DEFAULT_SERIALIZATION);
+        Serialization serialization = ExtensionLoader.getExtensionLoader(Serialization.class).getExtension(name);
+        if (serialization == null) {
+            throw new IOException("unsupported serialization codec " + name);
         }
 
         return serialization;

@@ -20,8 +20,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public abstract class AbstractPeer implements Peer, ChannelHandler {
 
-    public static final String CODEC_KEY = "codec";
-
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     protected AtomicBoolean destroyed = new AtomicBoolean();
@@ -45,7 +43,7 @@ public abstract class AbstractPeer implements Peer, ChannelHandler {
     }
 
     protected Codec getProtocolCodec() {
-        String codec = url.getParameter(CODEC_KEY, url.getProtocol());
+        String codec = url.getParameter(Constants.CODEC_KEY, url.getProtocol());
         return ExtensionLoader.getExtensionLoader(Codec.class).getExtension(codec);
     }
 

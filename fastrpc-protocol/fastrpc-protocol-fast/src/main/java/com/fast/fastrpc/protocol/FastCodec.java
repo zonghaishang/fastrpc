@@ -7,7 +7,7 @@ import com.fast.fastrpc.common.Constants;
 import com.fast.fastrpc.common.logger.Logger;
 import com.fast.fastrpc.common.logger.LoggerFactory;
 import com.fast.fastrpc.common.spi.ExtensionLoader;
-import com.fast.fastrpc.remoting.netty.buffer.IoBuffer;
+import com.fast.fastrpc.common.buffer.IoBuffer;
 
 import java.io.IOException;
 import java.util.HashMap;

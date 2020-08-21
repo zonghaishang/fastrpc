@@ -1,10 +1,15 @@
 package com.fast.fastrpc.exchange;
 
+import com.fast.fastrpc.EncodeSupport;
+import com.fast.fastrpc.common.buffer.IoBuffer;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * @author yiji
  * @version : Response.java, v 0.1 2020-08-03
  */
-public class Response {
+public class Response extends EncodeSupport {
 
     public static final short OK = 0;
     public static final short CLIENT_TIMEOUT = 1;
@@ -37,6 +42,10 @@ public class Response {
     private byte compress;
 
     private byte protocolVersion;
+
+    private IoBuffer buffer; // encoded buffer
+
+    private AtomicBoolean encoded = new AtomicBoolean();
 
     public Response() {
     }

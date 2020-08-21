@@ -1,12 +1,14 @@
 package com.fast.fastrpc.exchange;
 
+import com.fast.fastrpc.EncodeSupport;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author yiji
  * @version : Request.java, v 0.1 2020-08-03
  */
-public class Request {
+public class Request extends EncodeSupport {
 
     private static final AtomicInteger INVOKE_ID = new AtomicInteger(1);
 

@@ -1,4 +1,4 @@
-package com.fast.fastrpc.remoting.netty.buffer;
+package com.fast.fastrpc.common.buffer;
 
 import java.nio.charset.Charset;
 
@@ -578,6 +578,10 @@ public interface IoBuffer {
     IoBuffer copy();
 
     IoBuffer copy(int index, int length);
+
+    IoBuffer writeBytes(IoBuffer src);
+
+    IoBuffer writeBytes(IoBuffer src, int length);
 
     /**
      * Returns {@code true} if and only if this buffer has a backing byte array.

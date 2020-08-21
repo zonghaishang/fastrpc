@@ -7,6 +7,7 @@ import com.fast.fastrpc.channel.Channel;
 import com.fast.fastrpc.channel.ChannelPromise;
 import com.fast.fastrpc.channel.InvokeFuture;
 import com.fast.fastrpc.common.URL;
+import com.fast.fastrpc.common.buffer.IoBuffer;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -97,6 +98,16 @@ public abstract class AbstractServer extends AbstractPeer implements Server {
         Channel channel = this.channel;
         if (channel == null) return false;
         return channel.isActive();
+    }
+
+    @Override
+    public IoBuffer allocate() {
+        return this.channel.allocate();
+    }
+
+    @Override
+    public IoBuffer allocate(int capacity) {
+        return this.channel.allocate(capacity);
     }
 
     public abstract Channel doBind() throws Throwable;

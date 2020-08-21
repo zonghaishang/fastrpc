@@ -16,6 +16,11 @@
             <artifactId>fastrpc-common</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.fast</groupId>
+            <artifactId>fastrpc-remoting-api</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
     </dependencies>
 
 

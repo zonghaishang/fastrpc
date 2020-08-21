@@ -1,6 +1,6 @@
 package com.fast.fastrpc.serialize;
 
-import com.fast.fastrpc.remoting.netty.buffer.IoBuffer;
+import com.fast.fastrpc.common.buffer.IoBuffer;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -27,6 +27,11 @@ public class SimpleMapSerialization {
     }
 
     public void encodeAttachment(IoBuffer buffer, Map<String, String> attachment) throws IOException {
+
+        if (attachment == null || attachment.isEmpty()) {
+            return;
+        }
+
         try {
             for (Iterator<Map.Entry<String, String>> iterator = attachment.entrySet().iterator(); iterator.hasNext(); ) {
                 Map.Entry<String, String> item = iterator.next();

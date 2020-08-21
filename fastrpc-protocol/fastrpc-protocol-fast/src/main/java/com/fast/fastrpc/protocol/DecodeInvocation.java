@@ -8,7 +8,7 @@ import com.fast.fastrpc.common.logger.Logger;
 import com.fast.fastrpc.common.logger.LoggerFactory;
 import com.fast.fastrpc.common.utils.ReflectUtils;
 import com.fast.fastrpc.exchange.Request;
-import com.fast.fastrpc.remoting.netty.buffer.IoBuffer;
+import com.fast.fastrpc.common.buffer.IoBuffer;
 import com.fast.fastrpc.serialize.ObjectInput;
 import com.fast.fastrpc.serialize.Serialization;
 import com.fast.fastrpc.serialize.SerializationCodec;
