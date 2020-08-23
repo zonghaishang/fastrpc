@@ -24,14 +24,14 @@ public interface ObjectOutput {
 
     void writeDouble(double value) throws IOException;
 
-    void writeUTF(String v) throws IOException;
+    void writeString(String value) throws IOException;
 
-    void writeBytes(byte[] src) throws IOException;
+    void writeBytes(byte[] value) throws IOException;
 
-    void writeBytes(byte[] v, int off, int len) throws IOException;
+    void writeBytes(byte[] value, int offset, int len) throws IOException;
 
     void writeObject(Object obj) throws IOException;
 
-    void flush();
+    void flush() throws IOException;
 
 }

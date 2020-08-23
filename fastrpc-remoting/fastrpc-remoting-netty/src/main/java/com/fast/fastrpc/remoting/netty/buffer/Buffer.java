@@ -396,6 +396,18 @@ public class Buffer implements IoBuffer {
     }
 
     @Override
+    public IoBuffer readBytes(byte[] dst) {
+        this.buffer.readBytes(dst);
+        return this;
+    }
+
+    @Override
+    public IoBuffer readBytes(byte[] dst, int dstIndex, int length) {
+        this.buffer.readBytes(dst, dstIndex, length);
+        return this;
+    }
+
+    @Override
     public IoBuffer slice() {
         return new Buffer(this.buffer.slice());
     }

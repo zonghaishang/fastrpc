@@ -385,6 +385,10 @@ public interface IoBuffer {
 
     CharSequence readCharSequence(int length, Charset charset);
 
+    IoBuffer readBytes(byte[] dst);
+
+    IoBuffer readBytes(byte[] dst, int dstIndex, int length);
+
     /**
      * Gets a 2-byte UTF-16 character at the current {@code readerIndex}
      * and increases the {@code readerIndex} by {@code 2} in this buffer.
