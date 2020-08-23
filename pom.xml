@@ -13,6 +13,12 @@
         <module>fastrpc-protocol</module>
         <module>fastrpc-remoting</module>
         <module>fastrpc-serialization</module>
+        <module>fastrpc-tracer</module>
+        <module>fastrpc-filter</module>
+        <module>fastrpc-profiling</module>
+        <module>fastrpc-registry</module>
+        <module>fastrpc-cluster</module>
+        <module>fastrpc-config</module>
     </modules>
 
     <name>fastrpc</name>
