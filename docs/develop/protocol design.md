@@ -19,7 +19,7 @@ flag (bit) :
 
 0                  1         2           3          4                       8
 +------------------+---------+-----------+----------+--------+----+----+----+
-|  response/request/one way  | heartbeat | readonly |       compress        |
+|  response/request/one way  | heartbeat | readonly |       unused          |
 +---------------------------------------------------------------------------+
 
 codec (bit) :
@@ -33,7 +33,7 @@ codec (bit) :
 ```text
 magic: 协议魔法数，固定0xAF(fast取反有效字符)。
 version: rpc协议版本，固定1。
-flag：rpc协议标记，0~7分别表示请求/响应、one way、心跳、readonly和压缩算法。
+flag：rpc协议标记，0~7分别表示请求/响应、one way、心跳、readonly和保留4bit。
 codec: 序列化/反序列化id。
 timeout/status: 请求超时/响应状态码。
 header length: 表示头部长度大小。如果compress标记非0，则代表压缩后大小。
