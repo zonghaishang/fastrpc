@@ -2,15 +2,20 @@ package com.fast.fastrpc.protocol.codec;
 
 import com.fast.fastrpc.Invocation;
 import com.fast.fastrpc.ProtocolCodec;
+import com.fast.fastrpc.Result;
 import com.fast.fastrpc.channel.Channel;
 import com.fast.fastrpc.common.Constants;
 import com.fast.fastrpc.common.buffer.IoBuffer;
 import com.fast.fastrpc.common.logger.Logger;
 import com.fast.fastrpc.common.logger.LoggerFactory;
+import com.fast.fastrpc.common.utils.ReflectUtils;
 import com.fast.fastrpc.exchange.Request;
 import com.fast.fastrpc.exchange.Response;
 import com.fast.fastrpc.protocol.DecodeInvocation;
 import com.fast.fastrpc.protocol.DecodeRpcResult;
+import com.fast.fastrpc.serialize.ObjectOutput;
+import com.fast.fastrpc.serialize.Serialization;
+import com.fast.fastrpc.serialize.SerializationCodec;
 import com.fast.fastrpc.serialize.SimpleMapSerialization;
 
 import java.io.IOException;
@@ -150,12 +155,38 @@ public class FastCodecV1 extends AbstractFastCodec implements ProtocolCodec {
             ioBuffer.release();
         } else {
 
+            int offset = buffer.readerIndex();
+
             buffer.writeByte(magic);
             buffer.writeByte(VERSION_1);
+            buffer.writeByte(requestFlag);
 
+            Serialization serialization = SerializationCodec.getSerialization(channel.getUrl());
+            buffer.writeByte(serialization.getContentId());
+            buffer.writeInt(request.getId());
+            buffer.writeShort(request.getTimeout());
 
             Invocation invocation = (Invocation) request.getPayload();
-            mapSerialization.encodeAttachment(buffer, invocation.getAttachments());
+
+            buffer.readerIndex(offset + attachmentIndex);
+            int header = mapSerialization.encodeAttachment(buffer, invocation.getAttachments());
+            // update header length
+            buffer.setShort(offset + headerIndex, header);
+
+            ObjectOutput out = serialization.serialize(channel.getUrl(), buffer);
+            int readerIndex = buffer.readerIndex();
+
+            // write parameter descriptor
+            buffer.writeCharSequence(ReflectUtils.getDesc(invocation.getParameterTypes()));
+            Object[] arguments = invocation.getArguments();
+            if (arguments != null) {
+                for (Object argument : arguments) {
+                    out.writeObject(argument);
+                }
+            }
+            // update payload length
+            buffer.setInt(offset + payloadIndex, buffer.readerIndex() - readerIndex);
+            out.flush();
         }
 
     }
@@ -174,10 +205,44 @@ public class FastCodecV1 extends AbstractFastCodec implements ProtocolCodec {
             ioBuffer.release();
         } else {
 
+            int offset = buffer.readerIndex();
+
             buffer.writeByte(magic);
             buffer.writeByte(VERSION_1);
+            buffer.writeByte(responseFlag);
 
+            Serialization serialization = SerializationCodec.getSerialization(channel.getUrl());
+            buffer.writeByte(serialization.getContentId());
+            buffer.writeInt(response.getId());
+            buffer.writeShort(response.getStatus());
 
+            Result result = (Result) response.getPayload();
+
+            buffer.readerIndex(offset + attachmentIndex);
+            int header = mapSerialization.encodeAttachment(buffer, result.getAttachments());
+            // update header length
+            buffer.setShort(offset + headerIndex, header);
+
+            ObjectOutput out = serialization.serialize(channel.getUrl(), buffer);
+            int readerIndex = buffer.readerIndex();
+
+            Throwable error = result.getException();
+            if (error != null) {
+                out.writeByte(EXCEPTION);
+                out.writeObject(error);
+            } else {
+                Object value = result.getValue();
+                if (value != null) {
+                    out.writeByte(NORMAL);
+                    out.writeObject(value);
+                } else {
+                    out.writeByte(NULL);
+                }
+            }
+
+            // update payload length
+            buffer.setInt(offset + payloadIndex, buffer.readerIndex() - readerIndex);
+            out.flush();
         }
 
     }

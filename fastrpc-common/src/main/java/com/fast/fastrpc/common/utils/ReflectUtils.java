@@ -37,6 +37,43 @@ public class ReflectUtils {
         return classArray.toArray(EMPTY_CLASS_ARRAY);
     }
 
+    public static String getDesc(final Class<?>[] cs) {
+        if (cs.length == 0)
+            return "";
+
+        StringBuilder sb = new StringBuilder(64);
+        for (Class<?> c : cs)
+            sb.append(getDesc(c));
+        return sb.toString();
+    }
+
+    public static String getDesc(Class<?> c) {
+        StringBuilder ret = new StringBuilder();
+
+        while (c.isArray()) {
+            ret.append('[');
+            c = c.getComponentType();
+        }
+
+        if (c.isPrimitive()) {
+            String t = c.getName();
+            if ("void".equals(t)) ret.append('V');
+            else if ("boolean".equals(t)) ret.append('Z');
+            else if ("byte".equals(t)) ret.append('B');
+            else if ("char".equals(t)) ret.append('C');
+            else if ("double".equals(t)) ret.append('D');
+            else if ("float".equals(t)) ret.append('F');
+            else if ("int".equals(t)) ret.append('I');
+            else if ("long".equals(t)) ret.append('J');
+            else if ("short".equals(t)) ret.append('S');
+        } else {
+            ret.append('L');
+            ret.append(c.getName().replace('.', '/'));
+            ret.append(';');
+        }
+        return ret.toString();
+    }
+
     public static List<String> splitArgumentTypes(String desc) {
         if (desc == null || desc.length() == 0) {
             return Collections.emptyList();

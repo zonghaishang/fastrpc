@@ -26,11 +26,13 @@ public class SimpleMapSerialization {
         return attachment;
     }
 
-    public void encodeAttachment(IoBuffer buffer, Map<String, String> attachment) throws IOException {
+    public int encodeAttachment(IoBuffer buffer, Map<String, String> attachment) throws IOException {
 
         if (attachment == null || attachment.isEmpty()) {
-            return;
+            return 0;
         }
+
+        int encodedBytes = 0;
 
         try {
             for (Iterator<Map.Entry<String, String>> iterator = attachment.entrySet().iterator(); iterator.hasNext(); ) {
@@ -38,15 +40,22 @@ public class SimpleMapSerialization {
                 if (item.getKey() == null || item.getValue() == null) {
                     continue;
                 }
+
+                encodedBytes += item.getKey().length();
                 buffer.writeInt(item.getKey().length());
                 buffer.writeCharSequence(item.getKey());
 
+                encodedBytes += item.getValue().length();
                 buffer.writeInt(item.getValue().length());
                 buffer.writeCharSequence(item.getValue());
+
+                encodedBytes += 8;
             }
         } catch (Throwable e) {
             throw new IOException("Failed to encode attachment.", e);
         }
+
+        return encodedBytes;
     }
 
 

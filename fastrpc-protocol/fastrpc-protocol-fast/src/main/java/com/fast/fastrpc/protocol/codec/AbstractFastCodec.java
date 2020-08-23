@@ -36,6 +36,9 @@ public abstract class AbstractFastCodec extends AbstractCodec {
     public static final byte readonlyMask = 0x10;
     public static final byte compressMask = 0x0f;
 
+    public static final byte requestFlag = 1 << 6;
+    public static final byte responseFlag = 0;
+
     public static final byte magic = (byte) 0xaf;
 
     public static final byte NULL = 0;
