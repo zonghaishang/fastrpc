@@ -41,7 +41,4 @@ payload length: 表示有效负载长度。
 header attachment：请求或者响应头部键值对。
 payload： 请求或者响应有效负载。
 
-flag (bit)释义：
-compress: 0无压缩、1xyz启用压缩, x等于0压缩header、x等于1压缩body. yz代表压缩算法id.
-
 ```
