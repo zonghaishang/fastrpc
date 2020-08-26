@@ -48,7 +48,7 @@ public abstract class AbstractProtocol implements Protocol {
 
     @Override
     public <T> Invoker<T> refer(final Class<T> type, final URL url) throws RpcException {
-        Invoker<T> invoker = new RpcInvoker<T>(doRefer(type, url), type, url) {
+        final Invoker<T> invoker = new RpcInvoker<T>(doRefer(type, url), type, url) {
             @Override
             protected Result doInvoke(Invocation invocation) {
                 try {
@@ -61,6 +61,13 @@ public abstract class AbstractProtocol implements Protocol {
                 } catch (Throwable e) {
                     throw getRpcException(type, url, invocation, e);
                 }
+            }
+
+            @Override
+            public void destroy() {
+                super.destroy();
+                // remove refer invoker if exists.
+                invokers.remove(this);
             }
         };
         invokers.add(invoker);
@@ -103,8 +110,10 @@ public abstract class AbstractProtocol implements Protocol {
     }
 
     protected RpcException getRpcException(Class<?> type, URL url, Invocation invocation, Throwable e) {
-        RpcException re = new RpcException("Failed to invoke remote service: " + type + ", method: "
-                + invocation.getMethodName() + ", cause: " + e.getMessage(), e);
+        RpcException re = new RpcException("Failed to invoke remote service: " + type
+                + ", method: " + invocation.getMethodName()
+                + ", host: " + url.getAddress()
+                + ", cause: " + e.getMessage(), e);
         re.setCode(getErrorCode(e));
         return re;
     }

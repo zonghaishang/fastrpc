@@ -17,7 +17,6 @@ public class FastProtocolV1 extends AbstractFastProtocol {
 
     public static final String VERSION_V1 = String.valueOf(Constants.DEFAULT_PROTOCOL_VERSION);
 
-
     @Override
     protected ExchangeHandler getHandler() {
         return null;
@@ -31,7 +30,7 @@ public class FastProtocolV1 extends AbstractFastProtocol {
 
     @Override
     protected <T> Invoker<T> doRefer(Class<T> type, URL url) throws RpcException {
-        return null;
+        return new FastInvoker(type, url, openClient(url));
     }
 
     @Override

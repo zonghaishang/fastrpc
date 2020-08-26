@@ -48,6 +48,8 @@ public class Constants {
 
     public static final String EXCHANGER_KEY = "exchanger";
 
+    public static final String CONNECTIONS_KEY = "connections";
+
     public static final String NETTY = "netty";
 
     public static final String HEADER = "header";

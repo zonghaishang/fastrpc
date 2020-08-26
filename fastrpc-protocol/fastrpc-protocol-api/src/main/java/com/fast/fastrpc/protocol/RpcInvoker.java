@@ -30,4 +30,11 @@ public abstract class RpcInvoker<T> extends AbstractInvoker<T> {
     public T getProxy() {
         return target.getProxy();
     }
+
+    @Override
+    public void destroy() {
+        if (isDestroyed()) return;
+        super.destroy();
+        this.target.destroy();
+    }
 }
