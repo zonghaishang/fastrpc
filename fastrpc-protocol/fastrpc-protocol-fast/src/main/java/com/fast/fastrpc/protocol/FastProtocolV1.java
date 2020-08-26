@@ -1,5 +1,6 @@
 package com.fast.fastrpc.protocol;
 
+import com.fast.fastrpc.ExchangeHandler;
 import com.fast.fastrpc.Invoker;
 import com.fast.fastrpc.RpcException;
 import com.fast.fastrpc.common.Constants;
@@ -16,10 +17,16 @@ public class FastProtocolV1 extends AbstractFastProtocol {
 
     public static final String VERSION_V1 = String.valueOf(Constants.DEFAULT_PROTOCOL_VERSION);
 
+
+    @Override
+    protected ExchangeHandler getHandler() {
+        return null;
+    }
+
     @Override
     protected <T> Destroyable doExport(Invoker<T> invoker) throws RpcException {
-
-        return null;
+        openServer(invoker.getUrl());
+        return super.doExport(invoker);
     }
 
     @Override

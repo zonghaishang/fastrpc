@@ -6,6 +6,6 @@ package com.fast.fastrpc;
  */
 public interface ExchangeProxyHandler extends ChannelHandler {
 
-    ExchangeHandler getHandler();
+    ChannelHandler getHandler();
 
 }

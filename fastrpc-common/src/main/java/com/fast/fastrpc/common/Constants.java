@@ -44,6 +44,14 @@ public class Constants {
 
     public static final String DEFAULT_SERIALIZATION = "hessian4";
 
+    public static final String TRANSPORTER_KEY = "transporter";
+
+    public static final String EXCHANGER_KEY = "exchanger";
+
+    public static final String NETTY = "netty";
+
+    public static final String HEADER = "header";
+
     public static final int DEFAULT_WORKER_THREADS = Math.min(Runtime.getRuntime().availableProcessors() + 1, 32);
 
     public static final Pattern COMMA_SPLIT_PATTERN = Pattern.compile("\\s*[,]+\\s*");

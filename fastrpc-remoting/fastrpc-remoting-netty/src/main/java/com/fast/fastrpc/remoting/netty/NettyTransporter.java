@@ -15,11 +15,11 @@ public class NettyTransporter implements Transporter {
 
     @Override
     public Server bind(URL url, ChannelHandler handler) throws RemotingException {
-        return null;
+        return new NettyServer(url, handler);
     }
 
     @Override
     public Client connect(URL url, ChannelHandler handler) throws RemotingException {
-        return null;
+        return new NettyClient(url, handler);
     }
 }

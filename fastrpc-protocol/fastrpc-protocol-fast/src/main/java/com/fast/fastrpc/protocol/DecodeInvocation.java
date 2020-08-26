@@ -4,11 +4,11 @@ import com.fast.fastrpc.Decoder;
 import com.fast.fastrpc.RpcInvocation;
 import com.fast.fastrpc.channel.Channel;
 import com.fast.fastrpc.common.Constants;
+import com.fast.fastrpc.common.buffer.IoBuffer;
 import com.fast.fastrpc.common.logger.Logger;
 import com.fast.fastrpc.common.logger.LoggerFactory;
 import com.fast.fastrpc.common.utils.ReflectUtils;
 import com.fast.fastrpc.exchange.Request;
-import com.fast.fastrpc.common.buffer.IoBuffer;
 import com.fast.fastrpc.serialize.ObjectInput;
 import com.fast.fastrpc.serialize.Serialization;
 import com.fast.fastrpc.serialize.SerializationCodec;
@@ -90,8 +90,8 @@ public class DecodeInvocation extends RpcInvocation implements Decoder {
                 setArguments(arguments);
 
             } catch (Throwable e) {
-                if (logger.isWarnEnabled()) {
-                    logger.warn("Failed to decode request : " + e.getMessage(), e);
+                if (logger.isErrorEnabled()) {
+                    logger.error("Failed to decode request : " + e.getMessage(), e);
                 }
                 request.setBroken(true);
                 request.setPayload(e);
