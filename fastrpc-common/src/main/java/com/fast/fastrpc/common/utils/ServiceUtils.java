@@ -9,7 +9,7 @@ import com.fast.fastrpc.common.URL;
  */
 public class ServiceUtils {
 
-    public static String serviceKey(String path, String uniqueId, String protocol) {
+    public static String serviceKey(String path, String uniqueId) {
         StringBuffer buf = new StringBuffer();
         if (path != null && path.length() > 0) {
             buf.append(path);
@@ -17,14 +17,11 @@ public class ServiceUtils {
         if (uniqueId != null && uniqueId.length() > 0) {
             buf.append(":").append(uniqueId);
         }
-        if (protocol != null && protocol.length() > 0) {
-            buf.append("@").append(protocol);
-        }
         return buf.toString();
     }
 
     public static String findServiceKey(URL url) {
-        return serviceKey(url.getPath(), url.getParameter(Constants.UNIQUE_ID), url.getProtocol());
+        return serviceKey(url.getPath(), url.getParameter(Constants.UNIQUE_ID));
     }
 
 }

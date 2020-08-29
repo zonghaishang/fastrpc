@@ -61,7 +61,7 @@ public class RpcInvocation implements Invocation {
 
         if (invoker != null) {
             URL url = invoker.getUrl();
-            setAttachment(Constants.SERVICE_KEY, ServiceUtils.serviceKey(url.getPath(), url.getParameter(Constants.UNIQUE_ID), url.getProtocol()));
+            setAttachment(Constants.SERVICE_KEY, ServiceUtils.serviceKey(url.getPath(), url.getParameter(Constants.UNIQUE_ID)));
             String timeout = url.getParameter(Constants.TIMEOUT_KEY);
             if (timeout != null && timeout.length() > 0) {
                 setAttachment(Constants.TIMEOUT_KEY, timeout);

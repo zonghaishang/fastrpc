@@ -5,46 +5,42 @@ import com.fast.fastrpc.channel.InvokeFuture;
 
 /**
  * @author yiji
- * @version : ExchangeHandlerAdapter.java, v 0.1 2020-08-26
+ * @version : AbstractDelegateHandler.java, v 0.1 2020-08-29
  */
-public abstract class ExchangeHandlerAdapter extends ChannelHandlerAdapter {
-
-    protected ChannelHandler handler;
-
-    public ExchangeHandlerAdapter(ChannelHandler handler) {
-        this.handler = handler;
-    }
+public abstract class ChannelHandlerAdapter implements ExchangeDelegateHandler {
 
     @Override
     public ChannelHandler getHandler() {
-        if (handler instanceof ExchangeDelegateHandler) {
-            return ((ExchangeDelegateHandler) handler).getHandler();
-        }
-        return handler;
+        return null;
     }
 
     @Override
     public void connected(Channel channel) throws RemotingException {
-        this.handler.connected(channel);
+
     }
 
     @Override
     public void disconnected(Channel channel) throws RemotingException {
-        this.handler.disconnected(channel);
+
     }
 
     @Override
     public InvokeFuture write(Channel channel, Object message) throws RemotingException {
-        return this.handler.write(channel, message);
+        return null;
     }
 
     @Override
     public void received(Channel channel, Object message) throws RemotingException {
-        this.handler.received(channel, message);
+
     }
 
     @Override
     public void caught(Channel channel, Throwable exception) throws RemotingException {
-        this.handler.caught(channel, exception);
+
+    }
+
+    @Override
+    public Object reply(Channel channel, Object message) throws RemotingException {
+        return null;
     }
 }

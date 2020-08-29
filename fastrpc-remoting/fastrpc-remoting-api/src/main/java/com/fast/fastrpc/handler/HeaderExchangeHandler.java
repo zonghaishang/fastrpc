@@ -1,13 +1,13 @@
 package com.fast.fastrpc.handler;
 
-import com.fast.fastrpc.channel.DefaultFuture;
 import com.fast.fastrpc.ExchangeHandler;
-import com.fast.fastrpc.ExchangeProxyHandler;
+import com.fast.fastrpc.ExchangeDelegateHandler;
 import com.fast.fastrpc.ExecutionException;
-import com.fast.fastrpc.channel.InvokeFuture;
 import com.fast.fastrpc.RemotingException;
 import com.fast.fastrpc.channel.AttributeKey;
 import com.fast.fastrpc.channel.Channel;
+import com.fast.fastrpc.channel.DefaultFuture;
+import com.fast.fastrpc.channel.InvokeFuture;
 import com.fast.fastrpc.exchange.Request;
 import com.fast.fastrpc.exchange.Response;
 
@@ -17,7 +17,7 @@ import java.util.Map;
  * @author yiji
  * @version : HeaderExchangeHandler.java, v 0.1 2020-08-03
  */
-public class HeaderExchangeHandler implements ExchangeProxyHandler {
+public class HeaderExchangeHandler implements ExchangeDelegateHandler {
 
     static final AttributeKey<Long> readTimestamp = AttributeKey.valueOf("readTimestamp");
     static final AttributeKey<Long> writeTimestamp = AttributeKey.valueOf("writeTimestamp");
@@ -141,5 +141,10 @@ public class HeaderExchangeHandler implements ExchangeProxyHandler {
 
     private void updateWriteTimestamp(Channel channel) {
         channel.attr(writeTimestamp).set(System.currentTimeMillis());
+    }
+
+    @Override
+    public Object reply(Channel channel, Object message) throws RemotingException {
+        return handler.reply(channel, message);
     }
 }

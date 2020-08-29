@@ -8,6 +8,6 @@ import com.fast.fastrpc.channel.Channel;
  */
 public interface ExchangeHandler extends ChannelHandler {
 
-    Object reply(Channel channel, Object request) throws RemotingException;
+    Object reply(Channel channel, Object message) throws RemotingException;
 
 }
