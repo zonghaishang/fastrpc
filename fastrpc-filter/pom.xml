@@ -11,5 +11,12 @@
 
     <artifactId>fastrpc-filter</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.fast</groupId>
+            <artifactId>fastrpc-protocol-api</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>
