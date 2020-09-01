@@ -19,6 +19,8 @@
         <module>fastrpc-registry</module>
         <module>fastrpc-cluster</module>
         <module>fastrpc-config</module>
+        <module>fastrpc-registry/fastrpc-registry-api</module>
+        <module>fastrpc-registry/fastrpc-registry-etcd3</module>
     </modules>
 
     <name>fastrpc</name>
