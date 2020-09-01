@@ -54,6 +54,10 @@ public class Constants {
 
     public static final String HEADER = "header";
 
+    public static final String SERVER_KEY = "server";
+
+    public static final String CLIENT_KEY = "client";
+
     public static final int DEFAULT_WORKER_THREADS = Math.min(Runtime.getRuntime().availableProcessors() + 1, 32);
 
     public static final Pattern COMMA_SPLIT_PATTERN = Pattern.compile("\\s*[,]+\\s*");

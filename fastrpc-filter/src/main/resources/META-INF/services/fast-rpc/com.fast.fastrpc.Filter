@@ -1,0 +1,3 @@
+exceptionFilter=com.fast.fastrpc.filter.ExceptionFilter
+classloaderFilter=com.fast.fastrpc.filter.ClassloaderFilter
+contextFilter=com.fast.fastrpc.filter.ContextFilter

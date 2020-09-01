@@ -21,6 +21,10 @@ public class RpcContext {
         return context.get();
     }
 
+    public static void removeContext() {
+        context.remove();
+    }
+
     public SocketAddress remoteAddress() {
         return remoteAddress;
     }

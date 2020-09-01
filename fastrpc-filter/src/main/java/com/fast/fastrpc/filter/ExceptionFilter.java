@@ -8,14 +8,18 @@ import com.fast.fastrpc.Result;
 import com.fast.fastrpc.RpcContext;
 import com.fast.fastrpc.RpcException;
 import com.fast.fastrpc.RpcResult;
+import com.fast.fastrpc.common.Constants;
 import com.fast.fastrpc.common.logger.Logger;
 import com.fast.fastrpc.common.logger.LoggerFactory;
+import com.fast.fastrpc.common.spi.Activate;
+import com.fast.fastrpc.common.spi.Order;
 import com.fast.fastrpc.common.utils.ExceptionUtils;
 
 /**
  * @author yiji
  * @version : ExceptionFilter.java, v 0.1 2020-08-31
  */
+@Activate(group = Constants.SERVER_KEY, order = Order.Highest)
 public class ExceptionFilter implements Filter {
 
     private final Logger logger = LoggerFactory.getLogger(ExceptionFilter.class);

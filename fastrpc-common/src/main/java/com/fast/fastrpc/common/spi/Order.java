@@ -8,4 +8,10 @@ public interface Order {
 
     int order();
 
+    int Lowest = -10000;
+
+    int Normal = 1;
+
+    int Highest = 10000;
+
 }
