@@ -6,6 +6,7 @@ import com.fast.fastrpc.Exporter;
 import com.fast.fastrpc.Invocation;
 import com.fast.fastrpc.Invoker;
 import com.fast.fastrpc.RemotingException;
+import com.fast.fastrpc.RpcContext;
 import com.fast.fastrpc.RpcException;
 import com.fast.fastrpc.channel.Channel;
 import com.fast.fastrpc.common.Constants;
@@ -52,12 +53,17 @@ public class FastProtocolV1 extends AbstractFastProtocol {
             if (message instanceof Invocation) {
                 Invocation invocation = (Invocation) message;
                 Invoker<?> invoker = findInvoker(channel, invocation);
+                decorateIfRequired(channel);
                 return invoker.invoke(invocation);
             }
 
             throw new RemotingException(channel, "Unsupported request: "
                     + (message == null ? null : (message.getClass().getName() + ": " + message))
                     + ", client: " + channel.remoteAddress() + " --> server: " + channel.localAddress());
+        }
+
+        private void decorateIfRequired(Channel channel) {
+            RpcContext.getContext().setRemoteAddress(channel.remoteAddress());
         }
     }
 
