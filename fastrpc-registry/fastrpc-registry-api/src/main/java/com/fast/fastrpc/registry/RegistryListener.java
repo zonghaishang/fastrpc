@@ -8,7 +8,7 @@ import java.util.List;
  * @author yiji
  * @version : NotifyListener.java, v 0.1 2020-09-02
  */
-public interface NotifyListener {
+public interface RegistryListener {
 
     void notify(List<URL> urls);
 

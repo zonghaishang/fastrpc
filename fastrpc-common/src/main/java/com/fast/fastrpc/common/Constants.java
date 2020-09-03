@@ -18,6 +18,10 @@ public class Constants {
 
     public static final String SERVICE_KEY = "service";
 
+    public static final String CATEGORY_KEY = "category";
+
+    public static final String PROVIDER = "provider";
+
     public static final String TIMEOUT_KEY = "timeout";
 
     public static final String SHUTDOWN_KEY = "shutdown";
@@ -30,7 +34,7 @@ public class Constants {
 
     public static final String WORKER_THREADS_KEY = "workers";
 
-    public static final String CODEC_IN_IO_KEY = "codec.io";
+    public static final String CODEC_IN_IO_KEY = "codecIO";
 
     public static final String METHOD_KEY = "method";
 
@@ -57,6 +61,10 @@ public class Constants {
     public static final String SERVER_KEY = "server";
 
     public static final String CLIENT_KEY = "client";
+
+    public static final String CACHE_PATH = "cacheFile";
+
+    public static final String DISABLE_KEY = "disabled";
 
     public static final int DEFAULT_WORKER_THREADS = Math.min(Runtime.getRuntime().availableProcessors() + 1, 32);
 

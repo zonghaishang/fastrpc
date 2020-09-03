@@ -1,6 +1,7 @@
 package com.fast.fastrpc.common;
 
 import com.fast.fastrpc.common.utils.NetUtils;
+import com.fast.fastrpc.common.utils.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -10,6 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -37,6 +39,8 @@ public final class URL {
     private volatile String ip;
 
     private volatile String full;
+
+    private transient String serviceKey;
 
     protected URL() {
         this.protocol = null;
@@ -353,6 +357,25 @@ public final class URL {
         return urls;
     }
 
+    public String getServiceKey() {
+        if (serviceKey != null) {
+            return serviceKey;
+        }
+
+        StringBuffer buffer = new StringBuffer();
+        if (path != null && path.length() > 0) {
+            buffer.append(path);
+        }
+
+        String uniqueId = this.getParameter(Constants.UNIQUE_ID);
+        if (uniqueId != null && uniqueId.length() > 0) {
+            buffer.append(":").append(uniqueId);
+        }
+
+        serviceKey = buffer.toString();
+        return serviceKey;
+    }
+
     public URL setAddress(String address) {
         int i = address.lastIndexOf(':');
         String host;
@@ -364,6 +387,82 @@ public final class URL {
             host = address;
         }
         return new URL(protocol, username, password, host, port, path, parameters);
+    }
+
+    public String toFullString() {
+        if (full != null) {
+            return full;
+        }
+        return full = buildString(true, true);
+    }
+
+    private String buildString(boolean appendUser, boolean appendParameter) {
+        return buildString(appendUser, appendParameter, false, false);
+    }
+
+    private String buildString(boolean appendUser, boolean appendParameter, boolean useIP, boolean useService) {
+        StringBuilder buf = new StringBuilder();
+        if (StringUtils.isNotEmpty(protocol)) {
+            buf.append(protocol);
+            buf.append("://");
+        }
+        if (appendUser && StringUtils.isNotEmpty(username)) {
+            buf.append(username);
+            if (StringUtils.isNotEmpty(password)) {
+                buf.append(":");
+                buf.append(password);
+            }
+            buf.append("@");
+        }
+        String host;
+        if (useIP) {
+            host = getIp();
+        } else {
+            host = getHost();
+        }
+        if (StringUtils.isNotEmpty(host)) {
+            buf.append(host);
+            if (port > 0) {
+                buf.append(":");
+                buf.append(port);
+            }
+        }
+        String path;
+        if (useService) {
+            path = getServiceKey();
+        } else {
+            path = getPath();
+        }
+        if (StringUtils.isNotEmpty(path)) {
+            buf.append("/");
+            buf.append(path);
+        }
+
+        if (appendParameter) {
+            buildParameters(buf, true);
+        }
+        return buf.toString();
+    }
+
+    private void buildParameters(StringBuilder buf, boolean concat) {
+        if (getParameters() != null) {
+            boolean first = true;
+            for (Map.Entry<String, String> entry : new TreeMap<>(getParameters()).entrySet()) {
+                if (StringUtils.isNotEmpty(entry.getKey())) {
+                    if (first) {
+                        if (concat) {
+                            buf.append("?");
+                        }
+                        first = false;
+                    } else {
+                        buf.append("&");
+                    }
+                    buf.append(entry.getKey());
+                    buf.append("=");
+                    buf.append(entry.getValue() == null ? "" : entry.getValue().trim());
+                }
+            }
+        }
     }
 
 }

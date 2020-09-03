@@ -44,7 +44,7 @@ public interface Registry extends Host {
      * @param url      Subscription condition, not allowed to be empty
      * @param listener A listener of the change event, not allowed to be empty
      */
-    void subscribe(URL url, NotifyListener listener);
+    void subscribe(URL url, RegistryListener listener);
 
     /**
      * Unsubscribe
@@ -56,7 +56,7 @@ public interface Registry extends Host {
      * @param url      Subscription condition, not allowed to be empty
      * @param listener A listener of the change event, not allowed to be empty
      */
-    void unsubscribe(URL url, NotifyListener listener);
+    void unsubscribe(URL url, RegistryListener listener);
 
     /**
      * Publish service data to the registry by application dimension.

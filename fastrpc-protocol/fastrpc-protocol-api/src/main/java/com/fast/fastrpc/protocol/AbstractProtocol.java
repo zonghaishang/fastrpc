@@ -11,7 +11,6 @@ import com.fast.fastrpc.common.Destroyable;
 import com.fast.fastrpc.common.URL;
 import com.fast.fastrpc.common.logger.Logger;
 import com.fast.fastrpc.common.logger.LoggerFactory;
-import com.fast.fastrpc.common.utils.ServiceUtils;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -102,7 +101,7 @@ public abstract class AbstractProtocol implements Protocol {
     }
 
     protected String findServiceKey(URL url) {
-        return ServiceUtils.findServiceKey(url);
+        return url.getServiceKey();
     }
 
     protected int getErrorCode(Throwable e) {

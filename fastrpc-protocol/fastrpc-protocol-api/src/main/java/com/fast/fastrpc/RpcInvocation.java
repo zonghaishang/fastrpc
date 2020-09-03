@@ -2,8 +2,6 @@ package com.fast.fastrpc;
 
 import com.fast.fastrpc.common.Constants;
 import com.fast.fastrpc.common.URL;
-import com.fast.fastrpc.common.utils.ServiceUtils;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -61,7 +59,7 @@ public class RpcInvocation implements Invocation {
 
         if (invoker != null) {
             URL url = invoker.getUrl();
-            setAttachment(Constants.SERVICE_KEY, ServiceUtils.serviceKey(url.getPath(), url.getParameter(Constants.UNIQUE_ID)));
+            setAttachment(Constants.SERVICE_KEY, url.getServiceKey());
             String timeout = url.getParameter(Constants.TIMEOUT_KEY);
             if (timeout != null && timeout.length() > 0) {
                 setAttachment(Constants.TIMEOUT_KEY, timeout);
