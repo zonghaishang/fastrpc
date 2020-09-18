@@ -101,6 +101,7 @@ public class DecodeRpcResult extends RpcResult implements Decoder {
                              * therefore, there is no need to waste CPU decoding.
                              */
                             setValue(null);
+                            return;
                         }
 
                         Request request = future.getRequest();
