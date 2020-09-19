@@ -20,7 +20,7 @@ public class Constants {
 
     public static final String CATEGORY_KEY = "category";
 
-    public static final String PROVIDER = "provider";
+    public static final String PROVIDERS = "providers";
 
     public static final String TIMEOUT_KEY = "timeout";
 
@@ -30,6 +30,8 @@ public class Constants {
 
     public static final String RECONNECT_KEY = "reconnect";
 
+    public static final String CHECK_KEY = "check";
+
     public static final String CONNECT_TIMEOUT_KEY = "connect";
 
     public static final String WORKER_THREADS_KEY = "workers";
@@ -37,6 +39,8 @@ public class Constants {
     public static final String CODEC_IN_IO_KEY = "codecIO";
 
     public static final String METHOD_KEY = "method";
+
+    public static final String DYNAMIC_KEY = "dynamic";
 
     public static final String PROTOCOL_VERSION = "p";
 
@@ -61,6 +65,8 @@ public class Constants {
     public static final String SERVER_KEY = "server";
 
     public static final String CLIENT_KEY = "client";
+
+    public static final String REGISTRY_RETRY_PERIOD_KEY = "retryPeriod";
 
     public static final String CACHE_PATH = "cacheFile";
 

@@ -64,7 +64,17 @@ public interface Registry extends Host {
     void online();
 
     /**
-     * Removes data from the registry by application dimension.
+     * Publish service data to the registry by application protocol dimension.
+     */
+    void online(URL url);
+
+    /**
+     * Publish service data to the registry by application dimension.
      */
     void offline();
+
+    /**
+     * Removes data from the registry by application protocol dimension.
+     */
+    void offline(URL url);
 }

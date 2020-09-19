@@ -5,6 +5,7 @@ import com.fast.fastrpc.common.PrefixThreadFactory;
 import com.fast.fastrpc.common.URL;
 import com.fast.fastrpc.common.logger.Logger;
 import com.fast.fastrpc.common.logger.LoggerFactory;
+import com.fast.fastrpc.common.utils.UrlUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,12 +16,16 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -39,12 +44,14 @@ public abstract class AbstractRegistry implements Registry {
     private static final String cacheDirectory = System.getProperty("user.home") + separator + ".fastrpc";
     private static final String urlSplit = "\\s+";
 
-    private URL url;
+    private final URL url;
 
     // cached provider file.
     private File file;
 
     private final Properties properties = new Properties();
+
+    private final Set<URL> online = new CopyOnWriteArraySet<>();
 
     private final ConcurrentMap<String, List<URL>> registered = new ConcurrentHashMap<>();
 
@@ -69,50 +76,67 @@ public abstract class AbstractRegistry implements Registry {
     @Override
     public void register(URL url) {
         if (url == null) {
-            throw new IllegalArgumentException("register url == null");
+            throw new IllegalArgumentException("register url is required");
         }
         if (logger.isInfoEnabled()) {
             logger.info("Register: " + url);
         }
 
-
-
-//        registered.put(url.getParameter(Constants.CATEGORY_KEY, Constants.PROVIDER), url);
+        String category = url.getParameter(Constants.CATEGORY_KEY, Constants.PROVIDERS);
+        List<URL> urls = registered.get(category);
+        if (urls == null) {
+            synchronized (registered) {
+                urls = new CopyOnWriteArrayList<>();
+                registered.put(category, urls);
+            }
+        }
+        urls.add(url);
     }
 
     @Override
     public void unregister(URL url) {
         if (url == null) {
-            throw new IllegalArgumentException("unregister url == null");
+            throw new IllegalArgumentException("unregister url is required");
         }
         if (logger.isInfoEnabled()) {
             logger.info("Unregister: " + url);
         }
-        registered.remove(url);
+
+        String category = url.getParameter(Constants.CATEGORY_KEY, Constants.PROVIDERS);
+        List<URL> urls = registered.get(category);
+        if (urls == null || urls.isEmpty()) {
+            return;
+        }
+        urls.remove(url);
     }
 
     @Override
     public void subscribe(URL url, RegistryListener listener) {
         if (url == null) {
-            throw new IllegalArgumentException("subscribe url == null");
+            throw new IllegalArgumentException("subscribe url is required");
         }
         if (listener == null) {
-            throw new IllegalArgumentException("subscribe listener == null");
+            throw new IllegalArgumentException("subscribe listener is required");
         }
         if (logger.isInfoEnabled()) {
             logger.info("Subscribe: " + url);
         }
-//        Set<RegistryListener> listeners = subscribed.computeIfAbsent(url, n -> new ConcurrentHashSet<>());
-//        listeners.add(listener);
+        Set<RegistryListener> listeners = subscribed.get(url);
+        if (listeners == null) {
+            synchronized (subscribed) {
+                subscribed.put(url, listeners = new CopyOnWriteArraySet<>());
+            }
+        }
+        listeners.add(listener);
     }
 
     @Override
     public void unsubscribe(URL url, RegistryListener listener) {
         if (url == null) {
-            throw new IllegalArgumentException("unsubscribe url == null");
+            throw new IllegalArgumentException("unsubscribe url is required");
         }
         if (listener == null) {
-            throw new IllegalArgumentException("unsubscribe listener == null");
+            throw new IllegalArgumentException("unsubscribe listener is required");
         }
         if (logger.isInfoEnabled()) {
             logger.info("Unsubscribe: " + url);
@@ -120,6 +144,160 @@ public abstract class AbstractRegistry implements Registry {
         Set<RegistryListener> listeners = subscribed.get(url);
         if (listeners != null) {
             listeners.remove(listener);
+        }
+    }
+
+    @Override
+    public void online(URL url) {
+        if (url == null) {
+            throw new IllegalArgumentException("online url is required");
+        }
+        if (logger.isInfoEnabled()) {
+            logger.info("Online: " + url);
+        }
+        this.online.add(url);
+    }
+
+    @Override
+    public void online() {
+        // todo application level online.
+        // build application level url
+        //
+        // online.put( "protocol", url);
+    }
+
+    @Override
+    public void offline(URL url) {
+        if (url == null) {
+            throw new IllegalArgumentException("offline url is required");
+        }
+        if (logger.isInfoEnabled()) {
+            logger.info("Offline: " + url);
+        }
+        this.online.remove(url);
+    }
+
+    @Override
+    public void offline() {
+        if (logger.isInfoEnabled()) {
+            logger.info("Offline:" + getUrl());
+        }
+        for (URL url : getOnline()) {
+            offline(url);
+        }
+    }
+
+    protected void recover() throws Exception {
+        // register
+        Set<URL> recoverOnline = new HashSet<>(getOnline());
+        if (!recoverOnline.isEmpty()) {
+            for (URL url : recoverOnline) {
+                if (logger.isInfoEnabled()) {
+                    logger.info("Recover online url " + url);
+                }
+                online(url);
+            }
+        }
+
+        // subscribe
+        Map<URL, Set<RegistryListener>> recoverSubscribed = new HashMap<>(getSubscribed());
+        if (!recoverSubscribed.isEmpty()) {
+            if (logger.isInfoEnabled()) {
+                logger.info("Recover subscribe url " + recoverSubscribed.keySet());
+            }
+            for (Map.Entry<URL, Set<RegistryListener>> entry : recoverSubscribed.entrySet()) {
+                URL url = entry.getKey();
+                for (RegistryListener listener : entry.getValue()) {
+                    subscribe(url, listener);
+                }
+            }
+        }
+    }
+
+    protected void notify(URL url, RegistryListener listener, List<URL> urls) {
+        if (url == null) {
+            throw new IllegalArgumentException("notify url is required");
+        }
+        if (listener == null) {
+            throw new IllegalArgumentException("notify listener is required");
+        }
+        if ((urls == null || urls.isEmpty())) {
+            logger.warn("Ignore empty notify urls for subscribe url " + url);
+            return;
+        }
+        if (logger.isInfoEnabled()) {
+            logger.info("Notify urls for subscribe url " + url + ", urls: " + urls);
+        }
+        Map<String, List<URL>> result = new HashMap<>();
+        for (URL u : urls) {
+            if (UrlUtils.isMatch(url, u)) {
+                String category = u.getParameter(Constants.CATEGORY_KEY, Constants.PROVIDERS);
+                List<URL> categoryList = result.get(category);
+                if (categoryList == null) {
+                    categoryList = new ArrayList<>();
+                    result.put(category, categoryList);
+                }
+                categoryList.add(u);
+            }
+        }
+        if (result.isEmpty()) {
+            return;
+        }
+        Map<String, List<URL>> categoryNotified = notified.get(url);
+        if (categoryNotified == null) {
+            notified.putIfAbsent(url, new ConcurrentHashMap<String, List<URL>>());
+            categoryNotified = notified.get(url);
+        }
+        for (Map.Entry<String, List<URL>> entry : result.entrySet()) {
+            String category = entry.getKey();
+            List<URL> categoryList = entry.getValue();
+            categoryNotified.put(category, categoryList);
+            saveProperties(url);
+            listener.notify(categoryList);
+        }
+    }
+
+    @Override
+    public void destroy() {
+        if (logger.isInfoEnabled()) {
+            logger.info("Destroy registry:" + getUrl());
+        }
+
+        // remove registered providers.
+        offline();
+
+        Map<String, List<URL>> destroyRegistered = new HashMap<>(getRegistered());
+        if (!destroyRegistered.isEmpty()) {
+            for (Map.Entry<String, List<URL>> entry : destroyRegistered.entrySet()) {
+                for (URL url : new HashSet<>(entry.getValue())) {
+                    if (url.getParameter(Constants.DYNAMIC_KEY, true)) {
+                        try {
+                            unregister(url);
+                            if (logger.isInfoEnabled()) {
+                                logger.info("Destroy unregister url " + url);
+                            }
+                        } catch (Throwable t) {
+                            logger.warn("Failed to unregister url " + url + " to registry " + getUrl() + " on destroy, cause: " + t.getMessage(), t);
+                        }
+                    }
+                }
+            }
+        }
+        Map<URL, Set<RegistryListener>> destroySubscribed = new HashMap<>(getSubscribed());
+        if (!destroySubscribed.isEmpty()) {
+            for (Map.Entry<URL, Set<RegistryListener>> entry : destroySubscribed.entrySet()) {
+                URL url = entry.getKey();
+                for (RegistryListener listener : entry.getValue()) {
+                    try {
+                        unsubscribe(url, listener);
+                        if (logger.isInfoEnabled()) {
+                            logger.info("Destroy unsubscribe url " + url);
+                        }
+                    } catch (Throwable t) {
+                        logger.warn("Failed to unsubscribe url " + url + " to registry " + getUrl() + " on destroy, cause: " + t.getMessage(), t);
+                    }
+                }
+            }
         }
     }
 
@@ -277,7 +455,7 @@ public abstract class AbstractRegistry implements Registry {
     }
 
     private class SavePropertyTask implements Runnable {
-        private long version;
+        private final long version;
 
         private SavePropertyTask(long version) {
             this.version = version;
@@ -287,5 +465,26 @@ public abstract class AbstractRegistry implements Registry {
         public void run() {
             saveProperties0(version);
         }
+    }
+
+    public ConcurrentMap<String, List<URL>> getRegistered() {
+        return registered;
+    }
+
+    public ConcurrentMap<URL, Set<RegistryListener>> getSubscribed() {
+        return subscribed;
+    }
+
+    public ConcurrentMap<URL, Map<String, List<URL>>> getNotified() {
+        return notified;
+    }
+
+    public Set<URL> getOnline() {
+        return online;
+    }
+
+    @Override
+    public URL getUrl() {
+        return url;
     }
 }
