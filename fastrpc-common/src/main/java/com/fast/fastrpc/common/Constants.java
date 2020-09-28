@@ -12,6 +12,12 @@ public class Constants {
 
     public static final String REMOVE_VALUE_PREFIX = "-";
 
+    public static final String COMMA_SPLIT = ",";
+
+    public static final String SERVICE_SPLIT = "|";
+
+    public static final String EQUALS_KEY = "=";
+
     public static final String DEFAULT_KEY = "default";
 
     public static final String UNIQUE_ID = "uniqueId";
@@ -27,6 +33,10 @@ public class Constants {
     public static final String SHUTDOWN_KEY = "shutdown";
 
     public static final String APPLICATION_KEY = "app";
+
+    public static final String ZIP_KEY = "zip";
+
+    public static final String ZIP_NONE = "none";
 
     public static final String RECONNECT_KEY = "reconnect";
 
@@ -71,6 +81,8 @@ public class Constants {
     public static final String CACHE_PATH = "cacheFile";
 
     public static final String DISABLE_KEY = "disabled";
+
+    public static final String PAYLOAD_KEY = "payload";
 
     public static final int DEFAULT_WORKER_THREADS = Math.min(Runtime.getRuntime().availableProcessors() + 1, 32);
 

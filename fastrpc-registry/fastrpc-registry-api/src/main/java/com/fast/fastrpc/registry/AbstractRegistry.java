@@ -5,7 +5,9 @@ import com.fast.fastrpc.common.PrefixThreadFactory;
 import com.fast.fastrpc.common.URL;
 import com.fast.fastrpc.common.logger.Logger;
 import com.fast.fastrpc.common.logger.LoggerFactory;
+import com.fast.fastrpc.common.spi.ExtensionLoader;
 import com.fast.fastrpc.common.utils.UrlUtils;
+import com.fast.fastrpc.common.zip.ZipEngine;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -171,9 +173,12 @@ public abstract class AbstractRegistry implements Registry {
         }
 
         List<URL> exportedUrls = getExportedUrls(urls);
-
-        for (URL url : getOnline()) {
-            online(url);
+        if (exportedUrls != null && !exportedUrls.isEmpty()) {
+            for (URL url : exportedUrls) {
+                if (getOnline().add(url)) {
+                    online(url);
+                }
+            }
         }
     }
 
@@ -196,8 +201,112 @@ public abstract class AbstractRegistry implements Registry {
     }
 
     protected List<URL> getExportedUrls(List<URL> urls) {
-        // TODO need to be impl.
-        return null;
+        if (urls == null || urls.isEmpty()) {
+            return urls;
+        }
+
+        Map<String, List<URL>> protocolUrls = new HashMap<>();
+        for (URL url : urls) {
+            List<URL> invokers = protocolUrls.get(url.getProtocol());
+            if (invokers == null) {
+                invokers = new ArrayList<>();
+                protocolUrls.put(url.getProtocol(), invokers);
+            }
+            invokers.add(url);
+        }
+
+        for (Map.Entry<String, List<URL>> protocols : protocolUrls.entrySet()) {
+            String protocol = protocols.getKey();
+            List<URL> invokers = protocols.getValue();
+            if (invokers != null && !invokers.isEmpty()) {
+                Map<String, String> parameters = getApplicationParameters(urls);
+                injectParameters(invokers, parameters);
+                String payload = getApplicationPayload(parameters, urls);
+                String zipEngine = getUrl().getParameter(Constants.ZIP_KEY, Constants.ZIP_NONE);
+                String encodedPayload = ExtensionLoader.getExtensionLoader(ZipEngine.class)
+                        .getExtension(zipEngine).compress(getUrl(), payload);
+                URL url = new URL(protocol
+                        , invokers.get(0).getHost()
+                        , invokers.get(0).getPort()
+                        , invokers.get(0).getInterface()
+                        , parameters).addParameter(Constants.PAYLOAD_KEY, encodedPayload);
+                urls.add(url);
+            }
+        }
+
+        return urls;
+    }
+
+    protected void injectParameters(List<URL> invokers, Map<String, String> parameters) {
+        // inject global parameters.
+        if (!parameters.containsKey(Constants.APPLICATION_KEY)) {
+            parameters.put(Constants.APPLICATION_KEY, invokers.get(0).getParameter(Constants.APPLICATION_KEY));
+        }
+        if (!parameters.containsKey(Constants.ZIP_KEY)) {
+            parameters.put(Constants.ZIP_KEY, invokers.get(0).getParameter(Constants.ZIP_KEY, Constants.ZIP_NONE));
+        }
+
+        // remove duplicate key
+        parameters.remove(Constants.PROTOCOL_VERSION);
+        parameters.remove(Constants.SERVICE_KEY);
+    }
+
+    protected Map<String, String> getApplicationParameters(List<URL> urls) {
+        if (urls != null && urls.size() <= 1) {
+            return new HashMap<>();
+        }
+
+        URL minUrl = null;
+        for (URL url : urls) {
+            if (minUrl == null
+                    || url.getParameters().size() < minUrl.getParameters().size()) {
+                minUrl = url;
+            }
+        }
+
+        Map<String, String> parameters = new HashMap<>();
+        for (Map.Entry<String, String> pair : minUrl.getParameters().entrySet()) {
+            if (pair.getKey() == null || pair.getValue() == null) {
+                continue;
+            }
+
+            boolean matched = true;
+            String expected = minUrl.getParameter(pair.getKey());
+            for (URL url : urls) {
+                String actual = url.getParameter(pair.getKey());
+                if (!expected.equals(actual)) {
+                    matched = false;
+                    break;
+                }
+            }
+            if (matched) {
+                parameters.put(pair.getKey(), pair.getValue());
+            }
+        }
+        return parameters;
+    }
+
+    protected String getApplicationPayload(Map<String, String> parameters, List<URL> urls) {
+        StringBuffer buffer = new StringBuffer();
+        for (URL url : urls) {
+            if (buffer.length() > 0) {
+                buffer.append(Constants.SERVICE_SPLIT);
+            }
+            buffer.append(Constants.SERVICE_KEY).append(Constants.COMMA_SPLIT).append(url.getParameter(Constants.SERVICE_KEY));
+            boolean first = true;
+            for (Map.Entry<String, String> pair : url.getParameters().entrySet()) {
+                // skip application level parameters.
+                if (parameters.containsKey(pair.getKey())) {
+                    continue;
+                }
+                if (!first) {
+                    buffer.append(Constants.COMMA_SPLIT);
+                }
+                buffer.append(pair.getKey()).append(Constants.EQUALS_KEY).append(pair.getValue());
+                first = false;
+            }
+        }
+        return buffer.toString();
     }
 
     protected void recover() throws Exception {

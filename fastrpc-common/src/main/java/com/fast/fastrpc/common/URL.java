@@ -132,6 +132,10 @@ public final class URL {
         return path;
     }
 
+    public String getInterface() {
+        return getParameter(Constants.SERVICE_KEY, path);
+    }
+
     public URL setPath(String path) {
         return new URL(protocol, username, password, host, port, path, parameters);
     }
