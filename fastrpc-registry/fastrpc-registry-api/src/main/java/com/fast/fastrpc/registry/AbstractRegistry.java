@@ -160,10 +160,21 @@ public abstract class AbstractRegistry implements Registry {
 
     @Override
     public void online() {
-        // todo application level online.
-        // build application level url
-        //
-        // online.put( "protocol", url);
+        // convert registered urls to application level
+        String category = url.getParameter(Constants.CATEGORY_KEY, Constants.PROVIDERS);
+        List<URL> urls = registered.get(category);
+        if (urls == null || urls.isEmpty()) {
+            if (logger.isInfoEnabled()) {
+                logger.info("No exported service to online: " + url);
+            }
+            return;
+        }
+
+        List<URL> exportedUrls = getExportedUrls(urls);
+
+        for (URL url : getOnline()) {
+            online(url);
+        }
     }
 
     @Override
@@ -179,12 +190,14 @@ public abstract class AbstractRegistry implements Registry {
 
     @Override
     public void offline() {
-        if (logger.isInfoEnabled()) {
-            logger.info("Offline:" + getUrl());
-        }
         for (URL url : getOnline()) {
             offline(url);
         }
+    }
+
+    protected List<URL> getExportedUrls(List<URL> urls) {
+        // TODO need to be impl.
+        return null;
     }
 
     protected void recover() throws Exception {
