@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
  * @author yiji
  * @version : ExecutorUtil.java, v 0.1 2020-09-30
  */
-public class ExecutorUtil {
+public class ExecutorUtils {
 
     public static void shutdownAndAwaitTermination(ExecutorService pool) {
         shutdownAndAwaitTermination(pool, -1);
