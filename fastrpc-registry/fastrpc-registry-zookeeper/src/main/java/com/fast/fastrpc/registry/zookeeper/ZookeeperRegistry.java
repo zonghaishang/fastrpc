@@ -173,6 +173,16 @@ public class ZookeeperRegistry extends FailBackRegistry {
     }
 
     @Override
+    public void destroy() {
+        super.destroy();
+        try {
+            client.destroy();
+        } catch (Exception e) {
+            logger.warn("Failed to close zookeeper client " + getUrl() + ", cause: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
     public boolean isActive() {
         return client.isActive();
     }

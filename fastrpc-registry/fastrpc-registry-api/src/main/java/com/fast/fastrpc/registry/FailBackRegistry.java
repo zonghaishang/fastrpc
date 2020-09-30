@@ -3,6 +3,7 @@ package com.fast.fastrpc.registry;
 import com.fast.fastrpc.common.Constants;
 import com.fast.fastrpc.common.PrefixThreadFactory;
 import com.fast.fastrpc.common.URL;
+import com.fast.fastrpc.common.utils.ExecutorUtil;
 
 import java.util.Iterator;
 import java.util.List;
@@ -349,6 +350,17 @@ public abstract class FailBackRegistry extends AbstractRegistry {
         if (notified != null) {
             notified.remove(listener);
         }
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        try {
+            retryFuture.cancel(true);
+        } catch (Throwable t) {
+            logger.warn(t.getMessage(), t);
+        }
+        ExecutorUtil.shutdownAndAwaitTermination(retryExecutor, retryPeriod);
     }
 
     protected abstract void doOnline(URL url);
