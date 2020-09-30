@@ -12,9 +12,11 @@ public class Constants {
 
     public static final String REMOVE_VALUE_PREFIX = "-";
 
-    public static final String COMMA_SPLIT = ",";
+    public static final String COMMA_SEPARATOR = ",";
 
-    public static final String SERVICE_SPLIT = "|";
+    public static final String SERVICE_SEPARATOR = "|";
+
+    public final static String PATH_SEPARATOR = "/";
 
     public static final String EQUALS_KEY = "=";
 
@@ -76,6 +78,8 @@ public class Constants {
 
     public static final String CLIENT_KEY = "client";
 
+    public static final String GROUP_KEY = "group";
+
     public static final String REGISTRY_RETRY_PERIOD_KEY = "retryPeriod";
 
     public static final String CACHE_PATH = "cacheFile";
@@ -83,6 +87,14 @@ public class Constants {
     public static final String DISABLE_KEY = "disabled";
 
     public static final String PAYLOAD_KEY = "payload";
+
+    public static final String INTERFACE_KEY = "interface";
+
+    public static final String EXPORT_KEY = "export";
+
+    public static final String REFER_KEY = "refer";
+
+    public static final String EMPTY_PROTOCOL = "empty";
 
     public static final int DEFAULT_WORKER_THREADS = Math.min(Runtime.getRuntime().availableProcessors() + 1, 32);
 

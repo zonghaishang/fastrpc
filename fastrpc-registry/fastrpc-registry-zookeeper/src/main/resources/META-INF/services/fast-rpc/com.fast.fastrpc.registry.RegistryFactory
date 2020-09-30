@@ -1,0 +1,1 @@
+zookeeper=com.fast.fastrpc.registry.zookeeper.ZookeeperRegistryFactory

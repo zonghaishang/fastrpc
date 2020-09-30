@@ -248,6 +248,20 @@ public final class URL {
         return new URL(protocol, username, password, host, port, path, map);
     }
 
+    public URL removeParameters(String... keys) {
+        if (keys == null || keys.length == 0) {
+            return this;
+        }
+        Map<String, String> map = new HashMap<>(getParameters());
+        for (String key : keys) {
+            map.remove(key);
+        }
+        if (map.size() == getParameters().size()) {
+            return this;
+        }
+        return new URL(protocol, username, password, host, port, path, map);
+    }
+
     public URL addParameters(Map<String, String> parameters) {
         if (parameters == null || parameters.isEmpty()) {
             return this;
@@ -407,6 +421,10 @@ public final class URL {
             return full;
         }
         return full = buildString(true, true);
+    }
+
+    public String toServiceString() {
+        return buildString(true, false, false, true);
     }
 
     private String buildString(boolean appendUser, boolean appendParameter) {

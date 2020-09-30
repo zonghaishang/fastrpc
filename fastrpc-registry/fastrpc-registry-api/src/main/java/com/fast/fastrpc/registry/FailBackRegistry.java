@@ -47,7 +47,7 @@ public abstract class FailBackRegistry extends AbstractRegistry {
                 try {
                     retry();
                 } catch (Throwable t) {
-                    logger.error("Unexpected error occur at failed retry, cause: " + t.getMessage(), t);
+                    logger.error("Unexpected error occurred at failed retry, cause: " + t.getMessage(), t);
                 }
             }
         }, retryPeriod, retryPeriod, TimeUnit.MILLISECONDS);

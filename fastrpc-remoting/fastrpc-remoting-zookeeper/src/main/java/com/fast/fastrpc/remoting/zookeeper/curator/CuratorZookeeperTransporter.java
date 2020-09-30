@@ -11,6 +11,6 @@ import com.fast.fastrpc.remoting.zookeeper.ZookeeperTransporter;
 public class CuratorZookeeperTransporter implements ZookeeperTransporter {
     @Override
     public ZookeeperClient connect(URL url) {
-        return null;
+        return new CuratorZookeeperClient(url);
     }
 }

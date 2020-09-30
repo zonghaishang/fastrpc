@@ -290,9 +290,9 @@ public abstract class AbstractRegistry implements Registry {
         StringBuffer buffer = new StringBuffer();
         for (URL url : urls) {
             if (buffer.length() > 0) {
-                buffer.append(Constants.SERVICE_SPLIT);
+                buffer.append(Constants.SERVICE_SEPARATOR);
             }
-            buffer.append(Constants.SERVICE_KEY).append(Constants.COMMA_SPLIT).append(url.getParameter(Constants.SERVICE_KEY));
+            buffer.append(Constants.SERVICE_KEY).append(Constants.COMMA_SEPARATOR).append(url.getParameter(Constants.SERVICE_KEY));
             boolean first = true;
             for (Map.Entry<String, String> pair : url.getParameters().entrySet()) {
                 // skip application level parameters.
@@ -300,7 +300,7 @@ public abstract class AbstractRegistry implements Registry {
                     continue;
                 }
                 if (!first) {
-                    buffer.append(Constants.COMMA_SPLIT);
+                    buffer.append(Constants.COMMA_SEPARATOR);
                 }
                 buffer.append(pair.getKey()).append(Constants.EQUALS_KEY).append(pair.getValue());
                 first = false;

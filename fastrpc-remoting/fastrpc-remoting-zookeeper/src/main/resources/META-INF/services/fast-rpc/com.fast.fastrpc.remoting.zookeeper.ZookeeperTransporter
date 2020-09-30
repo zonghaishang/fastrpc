@@ -1,0 +1,1 @@
+curator=com.fast.fastrpc.remoting.zookeeper.curator.CuratorZookeeperTransporter

@@ -152,11 +152,20 @@ public class CuratorZookeeperClient extends AbstractZookeeperClient<CuratorWatch
         }
 
         public void unwatch() {
-            this.listener = null;
+            final ChildListener listener = this.listener;
+            if (listener != null) {
+                try {
+                    // remove curator watch now.
+                    client.watchers().remove(this);
+                } finally {
+                    this.listener = null;
+                }
+            }
         }
 
         @Override
         public void process(WatchedEvent event) throws Exception {
+            final ChildListener listener = this.listener;
             if (listener != null) {
                 String path = event.getPath() == null ? "" : event.getPath();
                 listener.childChanged(path,

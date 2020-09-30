@@ -11,5 +11,18 @@
 
     <artifactId>fastrpc-registry-zookeeper</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.fast</groupId>
+            <artifactId>fastrpc-registry-api</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fast</groupId>
+            <artifactId>fastrpc-remoting-zookeeper</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>
