@@ -136,6 +136,15 @@ public final class URL {
         return getParameter(Constants.SERVICE_KEY, path);
     }
 
+    public String getAuthority() {
+        if ((username == null || username.length() == 0)
+                && (password == null || password.length() == 0)) {
+            return null;
+        }
+        return (username == null ? "" : username)
+                + ":" + (password == null ? "" : password);
+    }
+
     public URL setPath(String path) {
         return new URL(protocol, username, password, host, port, path, parameters);
     }
