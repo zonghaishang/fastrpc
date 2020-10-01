@@ -24,6 +24,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author yiji
@@ -33,23 +34,10 @@ public class NettyClient extends AbstractClient implements Client {
 
     protected final static Logger logger = LoggerFactory.getLogger(NettyClient.class);
 
-    private static final NioEventLoopGroup workerGroup;
+    private static NioEventLoopGroup workerGroup;
     private Bootstrap bootstrap;
 
-    static {
-
-        String nThreads = ConfUtils.getProperty(Constants.WORKER_THREADS_KEY);
-        int workerThreads = Constants.DEFAULT_WORKER_THREADS;
-        if (nThreads != null && (nThreads = nThreads.trim()).length() > 0) {
-            try {
-                workerThreads = Integer.parseInt(nThreads);
-            } catch (Throwable e) {
-                logger.warn("Failed to parse worker threads", e);
-            }
-        }
-
-        workerGroup = new NioEventLoopGroup(workerThreads, new PrefixThreadFactory("NettyClientWorker"));
-    }
+    private final static AtomicBoolean workerPrepared = new AtomicBoolean();
 
     public NettyClient(URL url, ChannelHandler handler) throws RemotingException {
         super(url, handler);
@@ -57,6 +45,7 @@ public class NettyClient extends AbstractClient implements Client {
 
     @Override
     public void doOpen() {
+        prepareWorkerGroup();
         bootstrap = new Bootstrap();
 
         bootstrap.group(workerGroup)
@@ -119,6 +108,23 @@ public class NettyClient extends AbstractClient implements Client {
 
         this.channel = new NettyChannel(future.channel(), getUrl());
         return this.channel;
+    }
+
+    private void prepareWorkerGroup() {
+        if (workerPrepared.get()) return;
+        synchronized (workerPrepared) {
+            String workers = getUrl().getParameter(Constants.WORKER_THREADS_KEY, ConfUtils.getProperty(Constants.WORKER_THREADS_KEY));
+            int nThreads = Constants.DEFAULT_WORKER_THREADS;
+            if (workers != null && (workers = workers.trim()).length() > 0) {
+                try {
+                    nThreads = Integer.parseInt(workers);
+                } catch (Throwable e) {
+                    logger.warn("Failed to parse worker threads", e);
+                }
+            }
+            workerGroup = new NioEventLoopGroup(nThreads, new PrefixThreadFactory("NettyClientWorker"));
+            workerPrepared.set(true);
+        }
     }
 
     @Override
