@@ -36,16 +36,9 @@
 
         <curator.version>5.1.0</curator.version>
         <netty.version>4.1.52.Final</netty.version>
-    </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+        <spring.version>4.3.29.RELEASE</spring.version>
+    </properties>
 
     <dependencyManagement>
         <dependencies>
@@ -74,8 +67,26 @@
                 <version>${netty.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-framework-bom</artifactId>
+                <version>4.3.29.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
 
     <build>
         <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->

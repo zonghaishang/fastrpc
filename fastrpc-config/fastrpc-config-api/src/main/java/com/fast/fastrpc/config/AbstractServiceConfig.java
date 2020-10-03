@@ -21,6 +21,8 @@ public abstract class AbstractServiceConfig extends AbstractInterfaceConfig {
     // serialization
     protected String serialize;
 
+    protected Boolean register;
+
     protected List<ProtocolConfig> protocols;
 
     protected void checkProtocol() {
@@ -65,5 +67,13 @@ public abstract class AbstractServiceConfig extends AbstractInterfaceConfig {
 
     public void setProtocols(List<ProtocolConfig> protocols) {
         this.protocols = protocols;
+    }
+
+    public Boolean getRegister() {
+        return register;
+    }
+
+    public void setRegister(Boolean register) {
+        this.register = register;
     }
 }

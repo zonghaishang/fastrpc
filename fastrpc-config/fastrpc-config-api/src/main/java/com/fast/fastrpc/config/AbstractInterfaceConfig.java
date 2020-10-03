@@ -213,14 +213,14 @@ public abstract class AbstractInterfaceConfig extends AbstractMethodConfig {
 
     public void setInterfaceClass(Class<?> interfaceClass) {
         this.interfaceClass = interfaceClass;
-        setInterfaceName(interfaceClass.getName());
+        setInterface(interfaceClass.getName());
     }
 
-    public String getInterfaceName() {
+    public String getInterface() {
         return interfaceName;
     }
 
-    public void setInterfaceName(String interfaceName) {
+    public void setInterface(String interfaceName) {
         this.interfaceName = interfaceName;
     }
 
