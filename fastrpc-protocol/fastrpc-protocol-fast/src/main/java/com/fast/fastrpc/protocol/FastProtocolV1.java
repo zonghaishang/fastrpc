@@ -19,7 +19,7 @@ import com.fast.fastrpc.common.URL;
  */
 public class FastProtocolV1 extends AbstractFastProtocol {
 
-    public static final String NAME = "fast_v1";
+    public static final String NAME = "tr";
 
     public static final String VERSION_V1 = String.valueOf(Constants.DEFAULT_PROTOCOL_VERSION);
 
@@ -39,11 +39,6 @@ public class FastProtocolV1 extends AbstractFastProtocol {
     @Override
     protected <T> Invoker<T> doRefer(Class<T> type, URL url) throws RpcException {
         return new FastInvoker(type, url, openClient(url));
-    }
-
-    @Override
-    protected String getVersion() {
-        return VERSION_V1;
     }
 
     class RpcHandler extends ChannelHandlerAdapter {
@@ -79,4 +74,13 @@ public class FastProtocolV1 extends AbstractFastProtocol {
         return exporter.getInvoker();
     }
 
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public String getVersion() {
+        return VERSION_V1;
+    }
 }

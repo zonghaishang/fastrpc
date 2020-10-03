@@ -248,6 +248,24 @@ public final class URL {
         return new URL(protocol, username, password, host, port, path, map);
     }
 
+    public URL addParameterIfAbsent(String key, String value) {
+        if (key == null || key.length() == 0
+                || value == null || value.length() == 0) {
+            return this;
+        }
+        if (hasParameter(key)) {
+            return this;
+        }
+        Map<String, String> map = new HashMap<String, String>(getParameters());
+        map.put(key, value);
+        return new URL(protocol, username, password, host, port, path, map);
+    }
+
+    public boolean hasParameter(String key) {
+        String value = getParameter(key);
+        return value != null && value.length() > 0;
+    }
+
     public URL removeParameters(String... keys) {
         if (keys == null || keys.length == 0) {
             return this;
@@ -390,8 +408,9 @@ public final class URL {
         }
 
         StringBuffer buffer = new StringBuffer();
-        if (path != null && path.length() > 0) {
-            buffer.append(path);
+        String anInterface = getInterface();
+        if (anInterface != null && anInterface.length() > 0) {
+            buffer.append(anInterface);
         }
 
         String uniqueId = this.getParameter(Constants.UNIQUE_ID);

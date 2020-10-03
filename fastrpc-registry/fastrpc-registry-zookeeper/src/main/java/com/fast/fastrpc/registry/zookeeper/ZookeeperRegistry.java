@@ -153,7 +153,10 @@ public class ZookeeperRegistry extends FailBackRegistry {
     }
 
     protected String toServicePath(URL url) {
-        return toRootDir() + url.getParameter(Constants.APPLICATION_KEY);
+        String application = Constants.SERVER_KEY.equals(url.getParameter(Constants.SIDE_KEY))
+                ? url.getParameter(Constants.APPLICATION_KEY)
+                : url.getParameter(Constants.REMOTE_APPLICATION_KEY);
+        return toRootDir() + application;
     }
 
     protected String[] toCategoriesPath(URL url) {

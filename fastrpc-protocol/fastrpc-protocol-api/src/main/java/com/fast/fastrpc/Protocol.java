@@ -9,8 +9,16 @@ import com.fast.fastrpc.common.URL;
  */
 public interface Protocol extends Destroyable {
 
+    // protocol name
+    String getName();
+
+    // protocol version, if sub protocols are not supported, null can be returned
+    String getVersion();
+
+    // protocol port number
+    int getDefaultPort();
+
     <T> Exporter<T> export(Invoker<T> invoker) throws RpcException;
 
     <T> Invoker<T> refer(Class<T> type, URL url) throws RpcException;
-
 }

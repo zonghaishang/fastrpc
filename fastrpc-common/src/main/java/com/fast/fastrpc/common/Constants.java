@@ -10,6 +10,8 @@ public class Constants {
 
     public static final String BACKUP_KEY = "backup";
 
+    public static final String DEFAULT_PROTOCOL = "fast";
+
     public static final String REMOVE_VALUE_PREFIX = "-";
 
     public static final String COMMA_SEPARATOR = ",";
@@ -36,6 +38,8 @@ public class Constants {
 
     public static final String APPLICATION_KEY = "app";
 
+    public static final String REMOTE_APPLICATION_KEY = "provider";
+
     public static final String ZIP_KEY = "zip";
 
     public static final String ZIP_NONE = "none";
@@ -60,7 +64,7 @@ public class Constants {
 
     public static final Integer DEFAULT_PROTOCOL_VERSION = 1;
 
-    public static final String SERIALIZATION_KEY = "serialization";
+    public static final String SERIALIZATION_KEY = "serialize";
 
     public static final String DEFAULT_SERIALIZATION = "hessian4";
 
@@ -96,9 +100,28 @@ public class Constants {
 
     public static final String EMPTY_PROTOCOL = "empty";
 
+    public static final String SIDE_KEY = "side";
+
+    public static final String REGISTRY_PROTOCOL = "registry";
+
+    public static final String REGISTER_KEY = "register";
+
+    public static final String SUBSCRIBE_KEY = "subscribe";
+
+    public static final String LOCAL_PROTOCOL = "jvm";
+
+    public static final String PROXY_KEY = "proxy";
+
+    public static final String PROXY_ASM = "asm";
+
+    public static final String CODE_KEY = "code";
+
     public static final int DEFAULT_WORKER_THREADS = Math.min(Runtime.getRuntime().availableProcessors() + 1, 32);
 
     public static final Pattern COMMA_SPLIT_PATTERN = Pattern.compile("\\s*[,]+\\s*");
+
+    public static final Pattern REGISTRY_SPLIT_PATTERN = Pattern
+            .compile("\\s*[|;]+\\s*");
 
     public static final String DEFAULT_PROPERTIES_KEY = "default.properties.file";
 

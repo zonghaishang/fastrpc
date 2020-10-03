@@ -86,6 +86,10 @@ public abstract class AbstractServer extends AbstractPeer implements Server {
         return this.address;
     }
 
+    protected SocketAddress getBindAddress() {
+        return this.address;
+    }
+
     @Override
     public SocketAddress remoteAddress() {
         Channel channel = this.channel;

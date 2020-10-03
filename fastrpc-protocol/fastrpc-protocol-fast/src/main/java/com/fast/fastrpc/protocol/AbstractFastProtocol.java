@@ -26,7 +26,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public abstract class AbstractFastProtocol extends AbstractProtocol {
 
-    protected abstract String getVersion();
+    private static final int DEFAULT_PORT = 20660;
+
+    public abstract String getVersion();
 
     protected static final Map<String, Server> startedServers = new ConcurrentHashMap<>();
 
@@ -154,6 +156,11 @@ public abstract class AbstractFastProtocol extends AbstractProtocol {
                 }
             }
         }
+    }
+
+    @Override
+    public int getDefaultPort() {
+        return DEFAULT_PORT;
     }
 
     protected abstract ExchangeHandler getHandler();

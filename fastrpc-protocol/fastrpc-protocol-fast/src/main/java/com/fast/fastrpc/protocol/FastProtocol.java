@@ -20,6 +20,8 @@ import java.util.Set;
  */
 public class FastProtocol implements Protocol {
 
+    private static final int DEFAULT_PORT = 20660;
+
     private static final Logger logger = LoggerFactory.getLogger(FastProtocol.class);
 
     private static final Map<String, Protocol> protocols = new HashMap<>();
@@ -77,4 +79,18 @@ public class FastProtocol implements Protocol {
         }
     }
 
+    @Override
+    public String getName() {
+        return Constants.DEFAULT_PROTOCOL;
+    }
+
+    @Override
+    public int getDefaultPort() {
+        return DEFAULT_PORT;
+    }
+
+    @Override
+    public String getVersion() {
+        return null;
+    }
 }
