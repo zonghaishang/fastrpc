@@ -226,6 +226,22 @@ public final class URL {
         return value;
     }
 
+    public int getMethodParameter(String method, String key, int defaultValue) {
+        String methodKey = method + "." + key;
+        Number n = getNumbers().get(methodKey);
+        if (n != null) {
+            return n.intValue();
+        }
+
+        String value = getMethodParameter(method, key);
+        if (value == null || value.length() == 0) {
+            return defaultValue;
+        }
+        int i = Integer.parseInt(value);
+        getNumbers().put(methodKey, i);
+        return i;
+    }
+
     public String getDecodedParameter(String key) {
         return getDecodedParameter(key, null);
     }

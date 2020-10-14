@@ -116,6 +116,16 @@ public class Constants {
 
     public static final String CODE_KEY = "code";
 
+    public static final String REMOTE_TIMESTAMP_KEY = "remote.timestamp";
+
+    public static final String WEIGHT_KEY = "weight";
+
+    public static final String WARMUP_KEY = "warmup";
+
+    public static final int DEFAULT_WARMUP = 10 * 60 * 1000;
+
+    public static final int DEFAULT_WEIGHT = 100;
+
     public static final int DEFAULT_WORKER_THREADS = Math.min(Runtime.getRuntime().availableProcessors() + 1, 32);
 
     public static final Pattern COMMA_SPLIT_PATTERN = Pattern.compile("\\s*[,]+\\s*");
