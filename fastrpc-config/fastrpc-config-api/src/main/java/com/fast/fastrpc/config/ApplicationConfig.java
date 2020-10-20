@@ -10,6 +10,8 @@ import java.util.Map;
  */
 public class ApplicationConfig extends AbstractConfig {
 
+    public static final String NAME = "application";
+
     // application name
     @Parameter(name = "app")
     private String name;

@@ -8,6 +8,8 @@ import java.util.Map;
  */
 public class RegistryConfig extends AbstractConfig {
 
+    public static final String NAME = "registry";
+
     // register center address
     private String address;
 

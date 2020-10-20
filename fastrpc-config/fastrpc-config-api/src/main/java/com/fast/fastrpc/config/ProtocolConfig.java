@@ -8,6 +8,8 @@ import java.util.Map;
  */
 public class ProtocolConfig extends AbstractConfig {
 
+    public static final String NAME = "protocol";
+
     // protocol name
     private String name;
 
