@@ -32,7 +32,7 @@
         <maven.compiler.target>1.7</maven.compiler.target>
 
         <slf4j.api>1.7.30</slf4j.api>
-        <log4j.core>2.13.3</log4j.core>
+        <log4j.core>2.17.0</log4j.core>
 
         <curator.version>5.1.0</curator.version>
         <netty.version>4.1.52.Final</netty.version>
